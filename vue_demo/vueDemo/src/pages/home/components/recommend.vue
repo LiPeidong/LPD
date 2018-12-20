@@ -2,7 +2,7 @@
     <div>
         <div class='title'>推荐</div>
         <ul>
-            <li class='item border-bottom' v-for="item of recommendList" v-bind:key="item.id">
+            <li class='item border-bottom' v-for="item of list" v-bind:key="item.id">
                 <img class='item-img' v-bind:src='item.imgUrl'>
                 <div class='item-info'>
                     <p class='item-title'>{{item.title}}</p>
@@ -16,30 +16,8 @@
 <script>
 export default {
   name: 'HomeRecommend',
-  data () {
-    return {
-      recommendList: [{
-        id: '0001',
-        imgUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2485763305,2926365116&fm=27&gp=0.jpg',
-        title: '大连海洋世界',
-        desc: '浪漫大连首站，浪漫的海洋主题乐园'
-      }, {
-        id: '0001',
-        imgUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2485763305,2926365116&fm=27&gp=0.jpg',
-        title: '大连海洋世界',
-        desc: '浪漫大连首站，浪漫的海洋主题乐园'
-      }, {
-        id: '0001',
-        imgUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2485763305,2926365116&fm=27&gp=0.jpg',
-        title: '大连海洋世界',
-        desc: '浪漫大连首站，浪漫的海洋主题乐园'
-      }, {
-        id: '0001',
-        imgUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2485763305,2926365116&fm=27&gp=0.jpg',
-        title: '大连海洋世界',
-        desc: '浪漫大连首站，浪漫的海洋主题乐园'
-      }]
-    }
+  props: {
+    list: Array
   }
 }
 </script>

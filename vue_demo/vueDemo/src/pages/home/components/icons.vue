@@ -1,6 +1,6 @@
 <template>
   <div class="icons">
-      <swiper>
+      <swiper :options="swiperOption">
         <swiper-slide v-for="(page, index) of pages" v-bind:key="index">
             <div class='icon' v-for="item of page" v-bind:key="item.id">
                 <div class='icon-img'>
@@ -15,51 +15,20 @@
 <script>
 export default {
   name: 'HomeIcons',
+  props: {
+    list: Array
+  },
   data () {
     return {
-      iconList: [{
-        id: '0001',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '景点门票很长的字符串'
-      }, {
-        id: '0002',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '滑雪季'
-      }, {
-        id: '0003',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '一日游'
-      }, {
-        id: '0004',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '动植物园'
-      }, {
-        id: '0005',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '泡温泉'
-      }, {
-        id: '0006',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '必游榜单'
-      }, {
-        id: '0007',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '自然风光'
-      }, {
-        id: '0008',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '云南行'
-      }, {
-        id: '0009',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545068104449&di=ccb4310c281548a13580deca0fda082f&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F16%2F11%2F30%2F9320391c4b36c9506c7aa907c40517fc.jpg',
-        desc: '九寨'
-      }]
+      swiperOption: {
+        autoplay: false
+      }
     }
   },
   computed: {
     pages () {
       const pages = []
-      this.iconList.forEach((item, index) => {
+      this.list.forEach((item, index) => {
         const page = Math.floor(index / 8)
         // 返回小于等于index/8的最大整数
         if (!pages[page]) {
