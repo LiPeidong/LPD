@@ -61,6 +61,7 @@ export default {
       const pages = []
       this.iconList.forEach((item, index) => {
         const page = Math.floor(index / 8)
+        // 返回小于等于index/8的最大整数
         if (!pages[page]) {
           pages[page] = []
         }
@@ -81,6 +82,7 @@ export default {
     .icons{
         width: 100%
         height:50vw
+        margin-top: .1rem
     }
 
     .icon{
