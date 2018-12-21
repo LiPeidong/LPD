@@ -2,11 +2,12 @@
     <div>
         <city-header></city-header>
         <city-search></city-search>
-        <city-list></city-list>
-        <city-alphabet></city-alphabet>
+        <city-list v-bind:cities="cities" v-bind:hot="hotCities"></city-list>
+        <city-alphabet v-bind:cities="cities"></city-alphabet>
     </div>
 </template>
 <script>
+import axios from 'axios'
 import CityHeader from './components/header'
 import CitySearch from './components/search'
 import CityList from './components/list'
@@ -18,6 +19,30 @@ export default {
     CitySearch,
     CityList,
     CityAlphabet
+  },
+  data () {
+    return {
+      cities: {},
+      hotCities: []
+    }
+  },
+  methods: {
+    getCityInfo () {
+      axios.get('/static/mock/city.json')
+        .then(this.handleGetCityInfoSucc)
+    },
+    handleGetCityInfoSucc (res) {
+      res = res.data
+      console.log(res)
+      if (res.ret && res.data) {
+        const data = res.data
+        this.cities = data.cities
+        this.hotCities = data.hotCities
+      }
+    }
+  },
+  mounted () {
+    this.getCityInfo()
   }
 }
 </script>
