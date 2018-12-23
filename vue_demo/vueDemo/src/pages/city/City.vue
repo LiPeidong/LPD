@@ -1,7 +1,7 @@
 <template>
     <div>
         <city-header></city-header>
-        <city-search></city-search>
+        <city-search v-bind:cities="cities"></city-search>
         <city-list v-bind:cities="cities" v-bind:hot="hotCities" v-bind:letter="letter"></city-list>
         <city-alphabet v-bind:cities="cities" v-on:change="handleLetterChange"></city-alphabet>
     </div>
