@@ -5,7 +5,12 @@
         </div>
         <div class="search-content" ref="search" v-show="keyword">
             <ul>
-                <li class="search-item border-bottom" v-for="item of list" v-bind:key="item.id">{{item.name}}</li>
+                <li
+                class="search-item border-bottom"
+                v-for="item of list"
+                v-bind:key="item.id"
+                v-on:click="handleCityClick(item.name)"
+                >{{item.name}}</li>
                 <li class="search-item border-bottom" v-show="hasNodata">没有找到匹配数据</li>
             </ul>
         </div>
@@ -14,10 +19,19 @@
 
 <script>
 import Bscroll from 'better-scroll'
+import {mapMutations} from 'vuex'
 export default {
   name: 'CitySearch',
   props: {
     cities: Object
+  },
+  methods: {
+    handleCityClick (city) {
+      // this.$store.dispatch('changeCity', city)
+      this.changeCity(city)
+      this.$router.push('/')
+    },
+    ...mapMutations(['changeCity'])
   },
   computed: {
     hasNodata () {
@@ -58,7 +72,6 @@ export default {
   }
 }
 </script>
-
 <style lang='stylus' scoped>
     @import '~styles/varibles.styl'
     .search{

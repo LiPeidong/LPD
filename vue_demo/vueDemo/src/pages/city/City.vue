@@ -36,12 +36,11 @@ export default {
       res = res.data
       console.log(res)
       if (res.ret && res.data) {
-        const data = res.data
-        this.cities = data.cities
-        this.hotCities = data.hotCities
+        this.cities = res.data.cities
+        this.hotCities = res.data.hotCities
       }
     },
-    handleLetterChange (letter) {
+    handleLetterChange (letter) { // 父级触发change事件后，进行处理
       this.letter = letter
     }
   },

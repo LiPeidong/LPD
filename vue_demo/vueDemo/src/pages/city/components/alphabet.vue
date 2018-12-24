@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     handleLetterClick (e) {
-      this.$emit('change', e.target.innerText)
+      this.$emit('change', e.target.innerText) // 向父级触发change事件，并携带参数
     },
     handleTouchStart () {
       this.touchStatus = true
@@ -56,7 +56,7 @@ export default {
           console.log('touchy' + touchY)
           console.log('index' + index)
           if (index >= 0 && index < this.letters.length) {
-            this.$emit('change', this.letters[index])
+            this.$emit('change', this.letters[index]) // 向父级触发change事件，并携带参数
           }
         }, 20)
       }
