@@ -1,15 +1,41 @@
 <template>
-    <div class="banner">
-        <img class="banner-img" src="http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg">
-        <div class="banner-info">
-            <div class="banner-title">大连海洋水</div>
-            <div class="banner-number banner-icon"><span class="iconfont">&#xe632;</span>39</div>
+    <div>
+        <div class="banner" @click="handleBannerClick">
+            <img class="banner-img" src="http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg">
+            <div class="banner-info">
+                <div class="banner-title">大连海洋水</div>
+                <div class="banner-number banner-icon"><span class="iconfont">&#xe632;</span>39</div>
+            </div>
         </div>
+        <common-gallary
+        v-bind:imgs="imgs"
+        v-show="showGallary"
+        @close="handleGallaryClose"
+        ></common-gallary>
     </div>
 </template>
 <script>
+import CommonGallary from 'common/gallary/Gallary'
 export default {
-  name: 'DetailBanner'
+  name: 'DetailBanner',
+  data () {
+    return {
+      showGallary: false,
+      imgs: ['http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg',
+        'http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg']
+    }
+  },
+  methods: {
+    handleBannerClick () {
+      this.showGallary = true
+    },
+    handleGallaryClose () {
+      this.showGallary = false
+    }
+  },
+  components: {
+    CommonGallary
+  }
 }
 </script>
 <style lang="stylus" scoped>
