@@ -8,7 +8,7 @@ export default new Vuex.Store({
   actions: {
     changeCity (ctx, city) {
       console.log(city)
-      ctx.commit('changeCity', city)
+      ctx.commit('changeCity', city) // actions接收到changeCity后，通过commit方法传递到mutation
     }
   },
   mutations: mutations

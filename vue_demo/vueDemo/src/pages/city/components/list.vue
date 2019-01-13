@@ -47,7 +47,7 @@ import {mapState, mapMutations} from 'vuex'
 export default {
   name: 'CityList',
   computed: {
-    ...mapState({currentCity: 'city'})
+    ...mapState({currentCity: 'city'}) // 将store.state.city映射到this.currentcity
   },
   props: {
     hot: Array,
@@ -71,7 +71,7 @@ export default {
       this.changeCity(city)
       this.$router.push('/')
     },
-    ...mapMutations(['changeCity'])
+    ...mapMutations(['changeCity']) // 将mutation里面的changecity映射到这里的changecity方法
   }
 }
 </script>
