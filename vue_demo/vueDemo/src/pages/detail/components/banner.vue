@@ -1,14 +1,17 @@
 <template>
     <div>
         <div class="banner" @click="handleBannerClick">
-            <img class="banner-img" src="http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg">
+            <img class="banner-img" :src="bannerImg" />
             <div class="banner-info">
-                <div class="banner-title">大连海洋水</div>
-                <div class="banner-number banner-icon"><span class="iconfont">&#xe632;</span>39</div>
+                <div class="banner-title">{{this.sightName}}</div>
+                <div class="banner-number banner-icon">
+                    <span class="iconfont">&#xe632;</span>
+                    {{this.bannerImgs.length}}
+                </div>
             </div>
         </div>
         <common-gallary
-        v-bind:imgs="imgs"
+        v-bind:imgs="bannerImgs"
         v-show="showGallary"
         @close="handleGallaryClose"
         ></common-gallary>
@@ -18,11 +21,14 @@
 import CommonGallary from 'common/gallary/Gallary'
 export default {
   name: 'DetailBanner',
+  props: {
+    sightName: String,
+    bannerImg: String,
+    bannerImgs: Array
+  },
   data () {
     return {
-      showGallary: false,
-      imgs: ['http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg',
-        'http://img1.qunarzz.com/piao/fusion/1801/1a/94428c6dea109402.jpg_640x200_2cf590d8.jpg']
+      showGallary: false
     }
   },
   methods: {
@@ -60,7 +66,7 @@ export default {
 }
 .banner-title{
     flex:1
-    color: red
+    color: white
     font-size .32rem
     padding 0 .2rem
 }

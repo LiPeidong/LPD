@@ -22,5 +22,8 @@ export default new Router({
       name: 'Detail',
       component: Detail
     }
-  ]
+  ],
+  scrollBehavior (to, from, savePosition) {
+    return { x: 0, y: 0 } // 页面切换时，始终回到最顶部
+  }
 })
