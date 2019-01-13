@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     handleScroll () {
+      console.log('scroll')
       const top = document.documentElement.scrollTop
       if (top > 60) {
         let opacity = top / 140
@@ -46,8 +47,11 @@ export default {
       }
     }
   },
-  activated () {
-    window.addEventListener('scroll', this.handleScroll)
+  activated () { // 页面展示的时候执行函数
+    window.addEventListener('scroll', this.handleScroll) // 全局的事件，会对其他组件也产生影响
+  },
+  deactivated () { // 页面即将被隐藏时执行，也就是页面被替换
+    window.removeEventListener('scroll', this.handleScroll) // 对全局事件进行解绑
   }
 }
 </script>
