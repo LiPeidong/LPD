@@ -1,0 +1,576 @@
+html,body {
+  background: #f5f5f5;
+  min-height: 100vh;
+  font-family: PingFangSC-Regular;
+}
+.p-10 {
+  padding: 0 .1rem;
+}
+.p-20 {
+  padding: 0 .2rem;
+}
+.m-10 {
+  margin: 0 .1rem;
+}
+.m-20 {
+  margin: 0 .2rem;
+}
+.bg-white {
+  background-color: #fff;
+}
+.prompt {
+  color: #489ef0;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+.my-btn {
+  display: inline-block;
+  font-size: .16rem;
+  line-height: 1.8;
+  border-radius: .16rem;
+  border: 1px solid #489ef0;
+  padding: 0 15px;
+}
+.my-btn.back {
+  color: #489EF0;
+}
+.my-btn.go {
+  color: #fff;
+  background: #489EF0;
+}
+/************修改vant*********************/
+/*按钮*/
+.btn-primary {
+  background: #489ef0;
+  color: #fff;
+  border-radius: 10px;
+}
+.btn-primary.van-button--large {
+  font-size: 18px;
+}
+.btn-primary.dis {
+  background: #ddd;
+}
+.van-button--disabled {
+  color: #fff!important;
+  background-color: #c8c8c8 !important;
+  border: 1px solid #c8c8c8 !important;
+  font-size: 18px !important;
+}
+/*toast*/
+.van-toast--default {
+  width: 200px;
+}
+.van-toast__text {
+  line-height: 1.6;
+}
+/*form表单元素*/
+input[disabled],
+input:disabled,
+input.disabled,
+textarea:disabled,
+textarea.disabled,
+textarea[disabled] {
+  color: #333;
+  -webkit-text-fill-color: #333;
+  -webkit-opacity: 1;
+  opacity: 1;
+}
+.icon-field {
+  position: relative;
+}
+.icon-field .van-cell__value {
+  padding-left: 35px;
+}
+.icon-field .iconfont {
+  position: absolute;
+  font-size: .24rem;
+  z-index: 1;
+  color: #489ef0;
+  top: 50%;
+  left: 15px;
+  margin-top: -0.12rem;
+}
+.my-field .noLabel .van-cell__text {
+  display: none;
+}
+.my-field .van-field .van-cell__title {
+  width: 75px;
+  text-align: left;
+}
+.my-field .van-cell__text {
+  width: 58px;
+  display: inline-block;
+  text-align: justify;
+  height: 25px;
+  position: relative;
+}
+.my-field .van-cell__text::after {
+  content: "";
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+}
+.my-field .van-cell__text::before {
+  content: "：";
+  position: absolute;
+  height: 100%;
+  right: -5px;
+  top: 0;
+  width: 5px;
+}
+.my-field.list-field .van-field .van-cell__title {
+  width: 75px;
+}
+.my-field.list-field .van-cell__text {
+  width: 56px;
+}
+.my-field.list-field .van-cell {
+  padding: 0;
+  color: #333;
+}
+.my-field.list-field [class*=van-hairline]::after {
+  border: none;
+}
+.my-field.list-field input:disabled,
+.my-field.list-field textarea:disabled {
+  color: #333;
+}
+.yzm {
+  position: relative;
+}
+.yzm .van-field__control {
+  width: 65%;
+}
+.yzm #getCode {
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  height: 30px;
+  margin-top: -15px;
+  font-size: .16rem;
+  color: #489ef0;
+  border-left: 1px solid #ddd;
+  padding: 0 10px;
+  line-height: 30px;
+  background: #fff;
+}
+.yzm #getCode.dis {
+  color: #ddd;
+}
+.van-radio .van-icon-check {
+  color: #489ef0;
+}
+.van-radio .van-icon-checked {
+  color: #489ef0;
+}
+.checkBox-list {
+  text-align: left;
+  margin-top: 10px;
+}
+.checkBox-list .van-checkbox {
+  border: 1px solid #489ef0;
+  width: 30.33%;
+  text-align: center;
+  margin: 0 1.5% 10px;
+  line-height: .36rem;
+  height: .36rem;
+  font-size: 0;
+  border-radius: .2rem;
+  color: #489ef0;
+}
+.checkBox-list .van-checkbox .van-checkbox__icon {
+  display: none;
+}
+.checkBox-list .van-checkbox .van-checkbox__label {
+  margin: 0;
+  display: inline;
+  font-size: .14rem;
+}
+.checkBox-list .van-checkbox.isCheck {
+  background: #489ef0;
+  color: #fff;
+}
+.van-checkbox {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.van-checkbox .van-checkbox__icon {
+  border-color: #489ef0;
+}
+.van-checkbox .van-checkbox--checked {
+  border-color: #489ef0;
+  background-color: #489ef0;
+}
+.van-checkbox .van-checkbox__label {
+  margin-left: 0px;
+}
+.van-checkbox a {
+  color: #489ef0;
+}
+.my-textarea {
+  padding: 5px 10px;
+  border: 1px #ddd solid;
+}
+.my-textarea .van-field__control {
+  min-height: 60px;
+}
+/*弹出框dialog*/
+.my-popup {
+  border-radius: 5px;
+  width: 80%;
+  min-height: 250px;
+}
+.my-popup .t {
+  border-bottom: 1px solid #ddd;
+  font-size: 18px;
+  line-height: 2;
+  text-align: center;
+}
+.my-popup .c {
+  color: #333;
+  font-size: .14rem;
+  line-height: 1.6;
+  padding: .1rem .15rem;
+}
+.my-popup .c ul li {
+  overflow: hidden;
+}
+.my-popup .c ul li span {
+  display: block;
+}
+.my-popup .c ul li span:first-child {
+  width: .75rem;
+  float: left;
+}
+.my-popup .c ul li span:last-child {
+  margin-left: .75rem;
+}
+.my-popup .b {
+  text-align: center;
+  padding: 20px 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.my-popup .b .my-btn {
+  margin: 0 10px;
+}
+/*步骤*/
+.van-steps {
+  padding: 0 36px;
+}
+.van-steps .van-steps__items {
+  overflow: visible;
+}
+.van-steps .van-step--horizontal:first-child .van-step__title {
+  transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  margin-left: 3px;
+}
+.van-steps .van-step--horizontal:last-child .van-step__title {
+  transform: translateX(50%);
+  -webkit-transform: translateX(50%);
+  margin-right: 3px;
+}
+.van-steps .van-step--horizontal.van-step--finish .van-step__circle,
+.van-steps .van-step--horizontal.van-step--finish .van-step__line {
+  background: #489ef0;
+}
+/***********element-ui*********************/
+/*提交照片*/
+.el-upload {
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  outline: 0;
+}
+.el-upload .el-upload__input {
+  display: none;
+}
+
+[class*=" el-icon-"],
+[class^=el-icon-] {
+  font-family: element-icons !important;
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.el-rate__icon,
+.el-rate__item {
+  position: relative;
+  display: inline-block;
+}
+.el-icon-star-off:before {
+  content: "\e63d";
+}
+.el-icon-star-on:before {
+  content: "\e637";
+}
+.el-rate {
+  height: 20px;
+  line-height: 1;
+}
+.el-rate:active,
+.el-rate:focus {
+  outline-width: 0;
+}
+.el-rate__item {
+  font-size: 0;
+  vertical-align: middle;
+}
+.el-rate__icon {
+  font-size: 18px;
+  margin-right: 6px;
+  color: #c0c4cc;
+  -webkit-transition: .3s;
+  transition: 0.3s;
+}
+.el-rate__decimal,
+.el-rate__icon .path2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.el-rate__icon.hover {
+  -webkit-transform: scale(1.15);
+  transform: scale(1.15);
+}
+.el-rate__decimal {
+  display: inline-block;
+  overflow: hidden;
+}
+/***********公用***********/
+/*提交照片*/
+.pic-box {
+  background: #fff;
+  text-align: center;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 125px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.pic-box .el-upload {
+  width: 100%;
+  height: 100%;
+}
+.pic-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.pic-box .van-icon {
+  margin-top: 20px;
+  font-size: 40px;
+  color: #aaa;
+}
+.pic-box span {
+  color: #489ef0;
+  font-size: 18px;
+  display: block;
+  margin-top: 10px;
+}
+.pic-box > div {
+  position: relative;
+  z-index: 0;
+  margin-top: 8px;
+}
+.pic-box #imgUpload {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  z-index: 10;
+}
+/*小标题*/
+.stit {
+  font-size: 15px;
+  line-height: 35px;
+  padding-left: 10px;
+  position: relative;
+  text-align: left;
+}
+.stit:after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: .24rem;
+  background-color: #489ef0;
+  left: 0;
+  top: 50%;
+  margin-top: -0.12rem;
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-phone:before {
+  content: "\e652";
+}
+.icon-shouji:before {
+  content: "\e692";
+}
+.icon-yduiyanzhengma:before {
+  content: "\e6a6";
+}
+.icon-caidan:before {
+  content: "\e666";
+}
+.icon-rili:before {
+  content: "\e618";
+}
+.icon-weibiaoti-:before {
+  content: "\e614";
+}
+#loading {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background: #fff;
+  z-index: 100000;
+}
+#loading img {
+  display: block;
+  position: absolute;
+}
+#loading > div {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 80px;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+}
+#loading .l {
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+}
+#loading .s1 {
+  left: -10px;
+  top: -10px;
+  animation: rotate1 1s ease-in-out 0s infinite;
+  -webkit-animation: rotate1 1s ease-in-out 0s infinite;
+}
+#loading .s2 {
+  right: -15px;
+  top: -50px;
+  animation: rotate2 1.5s ease-in-out 0s infinite;
+  -webkit-animation: rotate2 1.5s ease-in-out 0s infinite;
+}
+#loading .s3 {
+  left: 10px;
+  bottom: -20px;
+  animation: rotate1 1s ease-in-out 0s infinite;
+  -webkit-animation: rotate1 1s ease-in-out 0s infinite;
+}
+#loading .s4 {
+  right: 0px;
+  bottom: 0px;
+  animation: rotate3 2s linear 0s infinite;
+  -webkit-animation: rotate3 2s linear 0s infinite;
+}
+@keyframes rotate1 {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotate1 {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate2 {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+@-webkit-keyframes rotate2 {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes rotate3 {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  50% {
+    transform: rotate(-180deg) scale(1.5);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1);
+  }
+}
+@-webkit-keyframes rotate3 {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  50% {
+    transform: rotate(-180deg) scale(1.5);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1);
+  }
+}
+/*分页页面*/
+.ul-list {
+  text-align: left;
+}
+.ul-list li {
+  border: 1px solid #489ef0;
+  text-align: center;
+  margin-right: 13px;
+  margin-top: 14px;
+  font-size: 14px;
+  color: #489ef0;
+  display: inline-block;
+  height: 23px;
+  border-radius: 12px;
+  line-height: 25px;
+  padding: 0 10px;
+}
+.ul-list li.isCheck {
+  background: #489ef0;
+  color: #fff;
+}
+ .van-dialog__message {
+  text-align: center !important;
+  font-size: 15px;
+}
+.van-hairline--top {
+  text-align: center;
+}
