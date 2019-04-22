@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport"  content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>地址解析</title>
+  <style type="text/css">
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+
+    body, button, input, select, textarea {
+      font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+    }
+
+    #container {
+      min-width: 603px;
+      min-height: 900px;
+    }
+    .btns{overflow: hidden;position: absolute;bottom:20px;left:20px}
+    .point{
+      width: 50px;
+      height: 50px;
+      color:#FFF;
+      background-color: #7D7D7D;
+      float:left;
+      text-align: center;
+      line-height: 48px;
+      cursor:pointer;
+    }
+    .point.active{
+      background-color: #ff6119;
+      color: #fff;
+    }
+
+  </style>
+</head>
+<body onload="init()">
+<div></div>
+<h1></h1>
+<div id="container"></div>
+<div class="btns">
+  <div class="point active" id="a">A</div>
+  <div class="point " id="b">B</div>
+  <div class="point " id="c">C</div>
+  <div class="point " id="d">D</div>
+</div>
+
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=QHPBZ-BEL3X-T5P4X-ZNM7D-A2M4S-A4FJL&libraries=drawing,geometry"></script>
+<!--<script src="js/jquery-2.1.3.min.js"></script>-->
+<script>
+  var Apoint;
+  var centerText = '{$data['address']}';
+  var call = ['{$data['call_lat']}', '{$data['call_lng']}'];
+  var orderGet = ['{$data['work_lat']}', '{$data['work_lng']}'];
+  var Finish = ['{$data['finish_lat']}', '{$data['finish_lng']}'];
+
+  console.log(call);
+  var geocoder, map, marker = null;
+  var cssC = {
+    color:      "#f00",
+    fontSize:   "16px",
+    fontWeight: "bold",
+    opacity:    ".7",
+    border:"#f00 solid 1px",
+    borderRadius:"5px"
+
+  };
+
+  //         标识地点
+  var labelObj = {};
+  var markerObj = {};
+  function textRemark(remark, latLngObj,obj)
+  {
+    markerObj[obj] = new qq.maps.Marker({
+      map:      map,
+      position: latLngObj
+//                style:cssM
+    });
+    labelObj[obj] = new qq.maps.Label({
+      //如果为true，表示可点击，默认true。
+      clickable: true,
+      //标签的文本。
+      content: remark,
+      //显示标签的地图。
+      map: map,
+      //相对于position位置偏移值，x方向向右偏移为正值，y方向向下偏移为正值，反之为负。
+      offset: new qq.maps.Size(10,-30),
+      //标签位置坐标，若offset不设置，默认标签左上角对准该位置。
+      position: latLngObj,
+      //Label样式。
+      style: cssC,
+      //如果为true，表示标签可见，默认为true。
+      visible: true,
+      //标签的z轴高度，zIndex大的标签，显示在zIndex小的前面。
+      zIndex: 1000
+    });
+  }
+
+  function controlStyle(a){
+    for(var key in markerObj){
+      var marker = markerObj[key];
+      if(key == a){
+        marker.setAnimation(qq.maps.MarkerAnimation.DOWN);
+      }else{
+        marker.setAnimation(null);
+      }
+    }
+    for(var key in labelObj){
+      var label = labelObj[key];
+      if(key != a){
+        label.setStyle({
+          opacity:".1"
+        });
+      }else{
+        label.setStyle(cssC);
+      }
+      label.setMap(map);
+    }
+
+  }
+
+  var init = function ()
+  {
+    var center = new qq.maps.LatLng(30.820948, 106.09612);
+    map = new qq.maps.Map(document.getElementById('container'), {
+      center: center,
+      zoom:   15
+    });
+
+
+    //调用地址解析类
+    geocoder = new qq.maps.Geocoder({
+      complete: function (result)
+      {
+        map.setCenter(result.detail.location);
+        textRemark('A点，投保地址', result.detail.location,'A');
+        if(call[0]){
+          textRemark('B点，用户呼叫', new qq.maps.LatLng(call[0], call[1]),'B');
+        }else{
+          document.getElementById('b').style.display = 'none';
+        }
+        if(orderGet[0]){
+          textRemark('C点，工人接单', new qq.maps.LatLng(orderGet[0], orderGet[1]),'C');
+        }else{
+          document.getElementById('c').style.display = 'none';
+        }
+        if(Finish[0]){
+          var dis = qq.maps.geometry.spherical.computeDistanceBetween(result.detail.location, new qq.maps.LatLng(Finish[0], Finish[1]))/1000;
+          textRemark('D点，核销地址,至A点距离为'+dis.toFixed(2)+'km', new qq.maps.LatLng(Finish[0], Finish[1]),'D');
+          var disB = qq.maps.geometry.spherical.computeDistanceBetween(new qq.maps.LatLng(orderGet[0], orderGet[1]), new qq.maps.LatLng(Finish[0], Finish[1]));
+          //alert(disB)
+          //textRemark('D点，核销地址,至C点距离为'+disB.toFixed(2)+'m', orderGet,'D')
+          new qq.maps.Polyline({
+            path: [result.detail.location, new qq.maps.LatLng(Finish[0],Finish[1])],
+            strokeColor: 'red',
+            strokeWeight: 2,
+            editable: false,
+            map: map
+          });
+        }else{
+          document.getElementById('d').style.display = 'none';
+        }
+      }
+    });
+    geocoder.getLocation(centerText);
+  };
+
+  //+++++++++++//
+  var s1 = document.getElementsByClassName('point');
+  for(var i = 0;i<s1.length;i++){
+    addEvent(i);
+  }
+  function addEvent(i) {
+    s1[i].addEventListener('click',function () {
+      liClick(i);
+    });
+  }
+  function liClick(m) {
+    for(var c = 0;c <s1.length;c++){
+      s1[c].className = 'point';
+    }
+    s1[m].className = 'active point';
+    if(m ==0){
+      geocoder.getLocation(centerText);
+      controlStyle('A');
+    }
+    if(m ==1){
+      Apoint = call;
+      map.panTo(new qq.maps.LatLng(Apoint[0],Apoint[1]));
+      controlStyle('B');
+    }
+    if(m ==2){
+      Apoint = orderGet;
+      map.panTo(new qq.maps.LatLng(Apoint[0],Apoint[1]));
+      controlStyle('C');
+    }
+    if(m ==3){
+      Apoint = Finish;
+      map.panTo(new qq.maps.LatLng(Apoint[0],Apoint[1]));
+      controlStyle('D');
+    }
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta name="renderer" content="webkit">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/vant.css"/>
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="css/fsh3.css" />
+		<style type="text/css">
+			#app{width: 100%;min-height: 100vh;}
+			.add input{box-sizing: border-box;}
+			.adds{padding-left: 90px;}
+			.adds input{width: 35px;border:1px solid #ddd;}
+			@media only screen and (max-width:320px) {
+				.van-field .van-cell__title{width: 80px;}
+				.adds input{width: 30px;}
+			}
+			.van-checkbox__icon{width:18px;height: 18px;}
+			.van-checkbox__icon{line-height: 18px;}
+		</style>
+	</head>
+	<body>
+		<div id='app' v-cloak>
+			<div class="BOXS">
+				<div class="box box1">
+					<div class="stit m-10">服务信息</div>
+					<div class="box-c bg-white my-field">
+						<van-cell-group>
+							<van-field v-model="nickname" label="微信昵称" disabled></van-field>
+							<van-field v-model="form.user" label="姓名" placeholder="请输入您的姓名" icon="clear" @click-icon="form.user = ''"></van-field>
+							<van-field v-model="form.phone" label="电话" placeholder="请输入您的手机号码"></van-field>
+							<div class="yzm">
+								<van-field v-model="form.yzm" label="验证码" placeholder="请填写手机验证码"></van-field>
+								<span id="getCode" @click="getCode" :class="{'dis':!isGet}">获取验证码</span>
+							</div>
+							<van-field v-model="address" class='add' label="服务地址" disabled @focus="addsShow = true" autosize type="textarea" rows='1'></van-field>
+							<van-field v-if="hash==1" value="家庭开锁" label="服务项目" disabled></van-field>
+							<van-field v-else-if="hash==2" value="家庭疏通" label="服务项目" disabled></van-field>
+							<van-field v-else-if="hash==3" v-model="form.service.name" label="服务项目" placeholder="请选择您需要服务的项目" @focus="addsShow1 = true" readonly ></van-field>
+							<van-field v-model="form.describe" type="textarea" label="故障描述" placeholder="故障描述..." autosize></van-field>
+						</van-cell-group>
+					</div>
+					<p class="prompt" style="margin: 5px 10px;">* 每次呼叫服务只能修复一处损坏。</p>
+					<van-popup v-model="addsShow1" position="bottom" :close-on-click-overlay='false'>
+						<van-picker :columns="canServices" @cancel="onCancel" @confirm="serviceChange" show-toolbar value-key='cat_name'></van-picker>
+					</van-popup>
+				</div>
+				<div class="box box2">
+					<div class="stit m-10">故障处图片</div>
+					<div class="box-c m-10">
+						<my-upload :pic-up="picUp" ind='0' txt='故障处照片' @childget='getImg'></my-upload>
+						<p class="prompt">* 上传现场照片，有利于服务人员携带合适的工具进行服务。</p>
+					</div>
+				</div>
+				<div style="text-align:center;margin:20px 0;color:#7e7e7e;">
+					<van-checkbox v-model="isCheck">我已认真阅读并接受<a href="fnw-text1.html">用户协议</a></van-checkbox>
+				</div>
+				<div class="p-10" style="margin: 20px 0;">
+					<van-button class='btn-primary' size="large" @click="formV" :disabled='!isCheck'>下一步</van-button>
+				</div>
+				<van-popup v-model="submitShow" class='my-popup' prevent-scroll>
+					<div class="t">服务信息确认</div>
+					<div class="c">
+						<ul>
+							<li><span>姓　　名：</span><span>{{form.user}}</span></li>
+							<li><span>电　　话：</span><span>{{form.phone}}</span></li>
+							<li><span>服务地址：</span><span>{{address}}</span></li>
+							<li><span>服务类型：</span><span>{{form.service.name}}</span></li>
+						</ul>
+						<p class="prompt" style="margin: 5px 0;color: #ff8431;">特别提醒：用户呼叫服务后，如因用户单方面原因取消服务，服务人员将向用户收取30元补偿费。</p>
+					</div>
+					<div class="b">
+						<a class='my-btn back' @click="submitShow = false">返回修改</a>
+						<a class='my-btn go' @click="submit">发起服务</a>
+					</div>
+				</van-popup>
+			</div>
+		</div>
+
+		<script src="js/vue.js"></script>
+		<script src="js/small-exif.js"></script>
+		<script type="text/javascript">
+			document.write("<s" + "cript type='text/javascript' src='js/components.js#v=" + Math.random() + "'></s" + "cript>");
+		</script>
+		<script src="js/vant.js"></script>
+		<script src="js/axios.js"></script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script charset="utf-8" src="//map.qq.com/api/js?v=2.exp&libraries=drawing,geometry"></script>
+		<script type="text/javascript">
+			'use strict';
+			var baseURL = 'http://wx.funlifeday.com/web/wechat';
+			new Vue({
+				el: '#app',
+				data: {
+					globalToast: null,
+					isCheck: true, //个人须知是否阅读
+					nickname: '', //昵称
+					address: '', //呼叫服务地址
+					hash: null, //hash值判断类型
+					picUp: { //图片上传的属性
+						url: baseURL + '/user/post/uploadBlob',
+						name: 'photo'
+					},
+					order_id: '', //订单id
+					form: {
+						user: '', //用户姓名
+						phone: null, //手机号
+						yzm: '', //验证码
+						service: {
+							id: '', //维修的cat_id
+							name: '' //维修的项目名称
+						},
+						describe: '', //故障描述
+						imgs: [] //故障图片
+					},
+					addsShow: false, //选中地址的弹窗
+					addselect: {}, //地址
+					addsShow1: false, //选中服务的弹窗
+					submitShow: false, //确认的弹窗
+					isGet: true, //是否可以获取二维码
+					canServices: [], //可以选择的服务
+					worker_info: {
+						lat: '', //坐标
+						lng: '',
+					},
+				},
+				created: function created() {
+					var _this = this;
+
+					this.globalToast = this.$toast.loading({
+						duration: 0, // 持续展示 toast
+						mask: true, //背景层
+						forbidClick: true, // 禁用背景点击
+						message: '加载中...'
+					});
+					var hash = window.location.hash;
+					this.hash = hash.substr(1);
+					switch (this.hash) {
+						case '1':
+							document.querySelector("title").innerHTML = "开锁服务";
+							break;
+						case '2':
+							document.querySelector("title").innerHTML = "疏通服务";
+							break;
+						case '3':
+							document.querySelector("title").innerHTML = "综合维修服务";
+							break;
+						default:
+							document.querySelector("title").innerHTML = "泛蜂窝";
+					}
+					this.order_id = this.getUrlParam("order_id");
+					//获取昵称
+					axios.get(baseURL + '/user/get/userInfo').then(function (res) {
+                        console.log(res)
+						_this.nickname = res.data.data.nickname;
+					});
+					//获取服务地址
+					axios.get(baseURL + '/user/get/orderDetail/' + this.order_id).then(function (res) {
+                        console.log(res)
+						_this.address = res.data.data;
+						_this.globalToast.clear();
+					}).catch(function (err) {
+						console.log(err.message);
+					});
+					//可选服务
+					if (this.hash == 3) {
+						//获取可呼叫的服务
+						axios.get(baseURL + '/user/get/availableCat/' + this.order_id).then(function (res) {
+                            console.log(res)
+							if (res.data.res) {
+								_this.canServices = [];
+								res.data.data.forEach(function (e) {
+									if (e.cat_id != 1 && e.cat_id != 2) {
+										_this.canServices.push(e);
+									}
+								});
+							}
+						}).catch(function (err) {
+							console.log(err.message);
+						});
+					} else if (this.hash == 2) {
+						this.form.service = { name: '家庭疏通', id: 2 };
+					} else if (this.hash == 1) {
+						this.form.service = { name: '家庭开锁', id: 1 };
+					}
+					//获取定位
+					var configDates = {
+						url: window.location.href,
+						jsApiList: ['getLocation']
+					};
+						this.getLocation(configDates);
+					},
+
+				mounted: function mounted() {
+					var _this2 = this;
+
+					//生命周期
+					this.$nextTick(function () {
+						//实例完全插入文档
+						var ua = window.navigator.userAgent.toLowerCase();
+						if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+							_this2.cartView();
+						} else {
+							var body = document.querySelector('body');
+							body.innerHTML = '请用微信打开此链接';
+							body.setAttribute('text-align', 'center');
+						}
+					});
+				},
+				methods: {
+					getLocation: function getLocation(configDates) {
+			var _this2 = this;
+
+			//获取sdk
+			axios.post(baseURL + '/user/get/config', configDates).then(function (res) {
+				if (res.data) {
+					wx.config(res.data);
+					//未开定位提示
+					// _this2.location_time = setTimeout(function () {
+						// _this2.$dialog.alert({
+						// 	title: '温馨提示',
+						// 	message: '获取定位失败，请确保手机定位处于打开状态！'
+						// }).then(function () {
+						// 	// on close
+						// 	window.location.reload();
+						// });
+					// }, 10000);
+					//获取定位
+					wx.ready(function () {
+						wx.getLocation({
+							success: function success(res) {
+							    // window.alert(res.latitude+'  '+res.longitude);
+								clearTimeout(_this2.location_time);
+								_this2.worker_info.lat = res.latitude;
+								_this2.worker_info.lng = res.longitude;
+							},
+							// cancel: function cancel(res) {
+							// 	_this2.$dialog.alert({
+							// 		title: '温馨提示',
+							// 		message: '接单须先授权获取地理位置！'
+							// 	}).then(function () {
+							// 		// on close
+							// 		window.location.reload();
+							// 	});
+							// }
+						});
+					});
+				} else {
+					alert("获取用户信息失败！");
+				}
+			}).catch(function (err) {
+				console.log(err.message);
+			});
+		},
+					cartView: function cartView() {},
+					//获取验证码
+					getCode: function getCode() {
+						var _this3 = this;
+
+						//检验手机号码
+						var regPhone = /^1[3|4|5|7|8|9][0-9]{9}$/;
+						//是否可以发送
+						if (this.isGet) {
+							if (!regPhone.test(this.form.phone)) {
+								this.$toast.fail('请填写正确的手机号码!');
+							} else {
+								this.isGet = false;
+								//获取验证码
+								axios.get(baseURL + '/user/get/phoneCode/' + this.form.phone).then(function (res) {
+									if (res.data.res) {
+										_this3.$toast.success('验证码已发送，请注意查收！');
+										setTimeout(function () {
+											_this3.isGet = true;
+										}, 60000);
+									} else {
+										_this3.isGet = true;
+										_this3.$toast.fail('验证码发送失败，请联系客服！');
+									}
+								}).catch(function (err) {
+									console.log(err.message);
+								});
+							}
+						} else {
+							this.$toast.fail('验证码已发送，请在60秒后重新获取!');
+						}
+					},
+
+					//选择服务确认
+					serviceChange: function serviceChange(values) {
+						this.form.service.id = values.cat_id;
+						this.form.service.name = values.cat_name;
+						this.addsShow1 = false;
+					},
+
+					//取消
+					onCancel: function onCancel() {
+						this.addsShow1 = false;
+					},
+
+					//从组件获取img数据
+					getImg: function getImg(i, url) {
+						this.form.imgs[i] = url;
+					},
+
+					//获取传递的数据
+					getUrlParam: function getUrlParam(name) {
+						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+						var r = window.location.search.substr(1).match(reg); //匹配目标参数
+						if (r != null) return unescape(r[2]);return null; //返回参数值
+					},
+
+					//表单验证
+					formV: function formV() {
+						var _this4 = this;
+						//姓名
+						var regName = /^[\u4e00-\u9fa5]{2,}$/;
+						var regN2 = /某某|女士|小姐|先生|师傅|师父/;
+						if (!regName.test(this.form.user)) {
+							this.$toast.fail('请输入真实中文姓名！');
+							return false;
+						} else if (regN2.test(this.form.user)) {
+							this.$toast.fail('请输入正确的真实姓名！');
+							return false;
+						};
+						//手机
+						var regPhone = /^1[0-9]{10}$/;
+						if (!regPhone.test(this.form.phone)) {
+							this.$toast.fail('请输入正确的手机号码！');
+							return false;
+						}
+						if (!this.form.yzm) {
+							this.$toast.fail('请输入手机验证码！');
+							return false;
+						}
+                        if (this.form.describe == '') {
+                            this.$toast.fail('请填写故障描述！');
+                            return false;
+                        }
+						//选择的服务
+						if (this.hash == 3) {
+							if (this.form.service.name == '请选择' || !this.form.service.name) {
+								this.$toast.fail('请选择您需要的服务！');
+								return false;
+							}
+							//故障图片
+							if (!this.form.imgs.length) {
+								this.$toast.fail('请上传故障处图片！');
+								return false;
+							}
+						}
+						//验证验证码正确性
+						axios.get(baseURL + '/user/get/phoneCodeCheck/' + this.form.phone + '?code=' + this.form.yzm).then(function (res) {
+                            console.log(res)
+							if (res.data.res) {
+								_this4.submitShow = true;
+							} else {
+								_this4.$toast.fail('手机号码或者验证码错误!');
+							}
+						}).catch(function (err) {
+							console.log(err.message);
+						});
+					},
+
+					//最后提交表单
+					submit: function submit() {
+						var _this5 = this;
+
+						this.globalToast = this.$toast.loading({
+							duration: 0, // 持续展示 toast
+							mask: true, //背景层
+							forbidClick: true, // 禁用背景点击
+							message: '呼叫服务中...'
+						});
+						var datas = {
+							order_id: this.order_id,
+							name: this.form.user,
+							mobile: this.form.phone,
+							describe: this.form.describe,
+							call_img: this.form.imgs[0],
+							lat:this.worker_info.lat,
+							lng:this.worker_info.lng
+						};
+						axios.post(baseURL + '/user/post/serviceOn/' + this.form.service.id, datas).then(function (res) {					console.log(res)
+							if (res.data.res) {
+								window.location.href = 'http://wx.funlifeday.com/web/wechat/user/enter/payForCall/' + res.data.data;
+								_this5.globalToast.clear();
+							} else {
+								_this5.$toast.fail(res.data.ex);
+							}
+						});
+					}
+				}
+			});
+
+		</script>
+	</body>
+</html>
