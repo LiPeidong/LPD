@@ -8,11 +8,17 @@
 					<p>平台将通过您选择的项目为您派单</p>
 					<p>（多选）</p>
 				<div class="list">
-						<p>综合服务</p>
+						<p>平台服务</p>
 						<ul class="ul-list">
-							<li v-for="(item,index) in list_info" :key="index" @click="handler(index,$event)" :class="{'active':active}" >{{item.name}}</li>
+							<li v-for="(item,index) in list_info" :key="index" @click="handler(index,$event)" :class="{'active':active}" style="width: 29%;padding: 0;">{{item.name}}</li>
             </ul>
 					</div>
+          <div class="list">
+            <p>服务商服务</p>
+            <ul class="ul-list">
+              <li v-for="(item,index) in list_info2" :key="index" @click="handler2(index,$event)" :class="{'active':active}" style="width: 29%;padding: 0;">{{item.name}}</li>
+            </ul>
+          </div>
 				</div>
 			</div>
 			<div>
@@ -27,7 +33,7 @@
 				</div> -->
 			</div>
 			<div class="p-10" style="margin: 30px 0px 0px 0px;text-align:center;">
-				<van-button class='btn-primary' size="large" @click="register()">提交信息</van-button>
+				<van-button class='btn-primary' size="large" @click="register()" >提交信息</van-button>
 			</div>
 		</div>
   </div>
@@ -48,7 +54,8 @@ export default {
       globalToast: null, //加载弹窗
       isAdd: false, //是否是添加服务页面
       canServices: [], //所有服务
-      list_info: [], //综合服务
+      list_info: [], //平台服务
+      list_info2: [], //服务商服务
       key: "",
       user:'',
       nickName: "", //微信昵称
@@ -62,6 +69,8 @@ export default {
         name: "photo"
       },
       imgs: [], //提交的资质照片
+      client_cate_gory:[],
+      service_provider_basic_product_ids:[]
     };
   },
   created() {
@@ -70,11 +79,13 @@ export default {
      let service =  JSON.parse(localStorage.getItem('temp'))
      let seruser =  JSON.parse(localStorage.getItem('user'))
      if(service){
-        this.list_info = service.basic_products
+        this.list_info = service.client_basic_product_cate_gory
+        this.list_info2 = service.service_provider_basic_products
      }else{
         let fail =  JSON.parse(localStorage.getItem('failed'))
-
-        this.list_info = fail.basic_products
+        // this.list_info = fail.basic_products
+       this.list_info = fail.client_basic_product_cate_gory
+       this.list_info2 = fail.service_provider_basic_products
      }
 
 
@@ -82,20 +93,20 @@ export default {
 
   mounted() {
     this.prevdata =JSON.parse(localStorage.getItem('temp')) || JSON.parse(localStorage.getItem('failed'))
-
+    console.log(this.prevdata)
     this.prevdatauser =JSON.parse(localStorage.getItem('user')) ||  this.prevdata.user
     //生命周期
-    // this.$nextTick(function() {
-    //   //实例完全插入文档
-    //   var ua = window.navigator.userAgent.toLowerCase();
-    //   if (ua.match(/MicroMessenger/i) == "micromessenger") {
-    //     _this2.cartView();
-    //   } else {
-    //     var body = document.querySelector("body");
-    //     body.innerHTML = "请用微信打开此链接";
-    //     body.setAttribute("text-align", "center");
-    //   }
-    // });
+    this.$nextTick(() => {
+      //实例完全插入文档
+      var ua = window.navigator.userAgent.toLowerCase();
+      if (ua.match(/MicroMessenger/i) == "micromessenger") {
+        this.cartView();
+      } else {
+        var body = document.querySelector("body");
+        body.innerHTML = "请用微信打开此链接";
+        body.setAttribute("text-align", "center");
+      }
+    });
   },
   methods: {
     // 初始化
@@ -113,12 +124,28 @@ export default {
       if (!e.target.className) {
         e.target.className = "active"; //切换按钮样式
         //写逻辑
-        this.dataid.push(this.list_info[index].id)
-        this.prevdata.basic_products = this.dataid
+        this.client_cate_gory.push(this.list_info[index].id)
+        console.log( this.client_cate_gory)
+        this.prevdata.client_cate_gory = this.client_cate_gory
       } else {
         e.target.className = ""; //切换按钮样式
-        this.dataid.splice(this.dataid.indexOf(this.list_info[index].id),1)
-        this.prevdata.basic_products = this.dataid
+        this.client_cate_gory.splice(this.client_cate_gory.indexOf(this.list_info[index].id),1)
+        console.log( this.client_cate_gory)
+        this.prevdata.client_cate_gory = this.client_cate_gory
+      }
+    },
+    handler2(index, e) {
+      if (!e.target.className) {
+        e.target.className = "active"; //切换按钮样式
+        //写逻辑
+        this.service_provider_basic_product_ids.push(this.list_info2[index].id)
+        console.log( this.service_provider_basic_product_ids)
+        this.prevdata.service_provider_basic_product_ids = this.service_provider_basic_product_ids
+      } else {
+        e.target.className = ""; //切换按钮样式
+        this.service_provider_basic_product_ids.splice(this.service_provider_basic_product_ids.indexOf(this.list_info[index].id),1)
+        console.log( this.service_provider_basic_product_ids)
+        this.prevdata.service_provider_basic_product_ids = this.service_provider_basic_product_ids
       }
 
 
@@ -138,17 +165,17 @@ export default {
         country:   this.prevdata.country,
         avatar:  this.prevdata.avatar,
         is_subscribe:   this.prevdata.is_subscribe,
-        basic_products:this.dataid,
         districts:this.prevdatauser.districts,
         img_data:this.prevdatauser.img_data,
         subscribe_at:this.prevdata.subscribe_at,
-        service_provider_id:this.prevdata.service_provider_id
+        service_provider_id:this.prevdata.service_provider_id,
+        service_provider_basic_product_ids:this.prevdata.service_provider_basic_product_ids,
+        client_cate_gory_ids : this.prevdata.client_cate_gory
       };
       localStorage.setItem('registerData',JSON.stringify(datas) )
 
-
       //提交前验证
-      if (!this.dataid.length) {
+      if (this.service_provider_basic_product_ids.length == 0 && this.client_cate_gory.length == 0) {
         this.$toast.fail("请至少选择一个服务内容！");
         return false;
       }
@@ -188,7 +215,7 @@ export default {
 }
 .Person .active {
   background: #489ef0;
-  color: #fff;
+  color: #fff !important;
 }
 </style>
 

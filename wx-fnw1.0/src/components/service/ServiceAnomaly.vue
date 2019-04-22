@@ -1,42 +1,43 @@
 <template>
   <div class="Hasservice">
     <!-- 异常工单 -->
-    <div class="Hasservice_list">
-        <div class="Hasservice_listher">
-            <h2><span></span>疏通服务</h2>
-            <label>工单异常</label>
-        </div>
-        <div class="Hasservice_listcen">
-          <p>姓名：李某某</p>
-          <p>电话：184XXXX9826</p>
-          <p>地址：四川省成都市成华区万科华茂1204号</p>
-          <p>接单时间：2018年11月16日   15:35:49</p>
-          <p>完成时间：2018年11月16日   16:35:49</p>
-        </div>
-        <div class="Hasservice_listpic">
-          <p>异常原因：图片不符</p>
-        </div>
-    </div>
-    <div class="Hasservice_list">
-        <div class="Hasservice_listher">
-            <h2><span></span>疏通服务</h2>
-            <label>申诉中</label>
-        </div>
-        <div class="Hasservice_listcen">
-          <p>姓名：李某某</p>
-          <p>电话：184XXXX9826</p>
-          <p>地址：四川省成都市成华区万科华茂1204号</p>
-          <p>接单时间：2018年11月16日   15:35:49</p>
-          <p>完成时间：2018年11月16日   16:35:49</p>
-        </div>
-        <div class="Hasservice_listpic">
-          <p>异常原因：图片不符</p>
-        </div>
-    </div>
+    <div v-show="false">
       <div class="Hasservice_list">
         <div class="Hasservice_listher">
-            <h2><span></span>疏通服务</h2>
-            <label>申诉失败</label>
+          <h2><span></span>疏通服务</h2>
+          <label>工单异常</label>
+        </div>
+        <div class="Hasservice_listcen">
+          <p>姓名：李某某</p>
+          <p>电话：184XXXX9826</p>
+          <p>地址：四川省成都市成华区万科华茂1204号</p>
+          <p>接单时间：2018年11月16日   15:35:49</p>
+          <p>完成时间：2018年11月16日   16:35:49</p>
+        </div>
+        <div class="Hasservice_listpic">
+          <p>异常原因：图片不符</p>
+        </div>
+      </div>
+      <div class="Hasservice_list">
+        <div class="Hasservice_listher">
+          <h2><span></span>疏通服务</h2>
+          <label>申诉中</label>
+        </div>
+        <div class="Hasservice_listcen">
+          <p>姓名：李某某</p>
+          <p>电话：184XXXX9826</p>
+          <p>地址：四川省成都市成华区万科华茂1204号</p>
+          <p>接单时间：2018年11月16日   15:35:49</p>
+          <p>完成时间：2018年11月16日   16:35:49</p>
+        </div>
+        <div class="Hasservice_listpic">
+          <p>异常原因：图片不符</p>
+        </div>
+      </div>
+      <div class="Hasservice_list">
+        <div class="Hasservice_listher">
+          <h2><span></span>疏通服务</h2>
+          <label>申诉失败</label>
         </div>
         <div class="Hasservice_listcen">
           <p>姓名：李某某</p>
@@ -50,7 +51,14 @@
         </div>
         <div class="Hasservice_listpic">
           <p>申诉失败原因：图片不符</p>
-       </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align: center; padding-top: 12px; height:100%;background: #fff;" v-show="true">
+      <div style="max-width:45%;height:175px;overflow:hidden;margin: 0 auto;">
+        <img src="../../assets/images/关于服务及订单.png" alt="" style="width:100%">
+      </div>
+      <p style="font-size: 12px;">您没有异常工单</p>
     </div>
   </div>
 </template>

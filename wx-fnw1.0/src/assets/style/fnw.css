@@ -1,7 +1,7 @@
 html,body {
   background: #f5f5f5;
   min-height: 100vh;
-  font-family: PingFangSC-Regular;
+.ul-list li: PingFangSC-Regular;
 }
 .p-10 {
   padding: 0 .1rem;
@@ -60,23 +60,17 @@ html,body {
 }
 /*toast*/
 .van-toast--default {
-  width: 200px;
+  width: 230px;
 }
 .van-toast__text {
   line-height: 1.6;
 }
 /*form表单元素*/
-input[disabled],
 input:disabled,
 input.disabled,
 textarea:disabled,
 textarea.disabled,
-textarea[disabled] {
-  color: #333;
-  -webkit-text-fill-color: #333;
-  -webkit-opacity: 1;
-  opacity: 1;
-}
+
 .icon-field {
   position: relative;
 }
@@ -113,19 +107,12 @@ textarea[disabled] {
   width: 100%;
   height: 0;
 }
-.my-field .van-cell__text::before {
-  content: "：";
-  position: absolute;
-  height: 100%;
-  right: -5px;
-  top: 0;
-  width: 5px;
-}
 .my-field.list-field .van-field .van-cell__title {
   width: 75px;
 }
 .my-field.list-field .van-cell__text {
   width: 56px;
+  white-space: nowrap;
 }
 .my-field.list-field .van-cell {
   padding: 0;
@@ -133,10 +120,6 @@ textarea[disabled] {
 }
 .my-field.list-field [class*=van-hairline]::after {
   border: none;
-}
-.my-field.list-field input:disabled,
-.my-field.list-field textarea:disabled {
-  color: #333;
 }
 .yzm {
   position: relative;
@@ -206,9 +189,6 @@ textarea[disabled] {
   border-color: #489ef0;
   background-color: #489ef0;
 }
-.van-checkbox .van-checkbox__label {
-  margin-left: 0px;
-}
 .van-checkbox a {
   color: #489ef0;
 }
@@ -230,12 +210,6 @@ textarea[disabled] {
   font-size: 18px;
   line-height: 2;
   text-align: center;
-}
-.my-popup .c {
-  color: #333;
-  font-size: .14rem;
-  line-height: 1.6;
-  padding: .1rem .15rem;
 }
 .my-popup .c ul li {
   overflow: hidden;
@@ -328,6 +302,7 @@ textarea[disabled] {
 .el-rate:focus {
   outline-width: 0;
 }
+.van-field__control:disabled{color: #333;}
 .el-rate__item {
   font-size: 0;
   vertical-align: middle;
@@ -553,14 +528,14 @@ textarea[disabled] {
 .ul-list li {
   border: 1px solid #489ef0;
   text-align: center;
-  margin-right: 13px;
+  margin-right: 3%;
   margin-top: 14px;
   font-size: 14px;
   color: #489ef0;
   display: inline-block;
   height: 23px;
   border-radius: 12px;
-  line-height: 25px;
+  line-height: 23px;
   padding: 0 10px;
 }
 .ul-list li.isCheck {

@@ -9,7 +9,7 @@
       <ul>
         <li v-for="item in datas" @click="toDatail(item.id)">
           <div class="work_img">
-            <img src="../../assets/images/work.jpg" alt="">
+            <img :src='item.avatar' alt="">
           </div>
           <div class="mywork_text">
             <div style="font-size:12px;">
@@ -19,14 +19,15 @@
             </div>
             <div style="text-align:right;color: #499ef0; font-size:14px;">
                 <van-rate
-                  v-model="value"
+                  v-model=item.rate
                   :size="14"
                   :count="5"
                   color="#ffa800"
                   readonly
+                  void-color="#ffa800"
                 />
-                <P>{{item.service_count}}单</P>
-                <P>{{item.service_total_price}}元</P>
+                <P>{{item.service_count}} 单</P>
+                <P>{{item.service_total_price.toFixed(2)}} 元</P>
             </div>
           </div>
         </li>
@@ -42,10 +43,10 @@ export default {
   name: 'Mywork',
    data() {
     return {
-      value:3,
+      value:null,
       headcount:'0',
       datas:[],
-      service_provider_id:null
+      service_provider_id:null,
     }
   },
   created(){
@@ -68,7 +69,11 @@ export default {
         this.globalToast.clear();
       })
       .catch(err => {
-        console.log(err);
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
       });
   },
   methods:{
@@ -93,7 +98,7 @@ export default {
   .Hasservice_header>h2{font-weight: bold; color: #ff8431;font-size: 24px;font-family: PingFangSC-Regular;padding: 20px 0 13px 0;}
   .Hasservice_header>h2>span{font-size: 12px;}
   .Hasservice_header>p{font-size: 14px;padding-bottom: 20px;}
-  .mywork_list ul li{display: flex;background: #fff;margin: 10px;padding: 12px 10px;margin-bottom: 10px;}
-  .mywork_text{text-align: left;width: 100%;display: flex;justify-content:space-between;margin-left: 11px;line-height: 21px;}
+  .mywork_list ul li{  align-items:center;display: flex;background: #fff;margin: 10px;padding: 12px 10px;margin-bottom: 10px;}
+  .mywork_text{text-align: left;width: 100%;display: flex;justify-content:space-between;margin-left: 11px;line-height: 19px;}
   .work_img img{width: 58px;height: 58px;}
 </style>

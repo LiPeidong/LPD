@@ -5,7 +5,8 @@
             <div class="Hasservice_listcen">
                 <h2>{{name}}  师傅</h2>
                 <p>手机号码：{{phone}}</p>
-                <p class="content">服务内容：<span v-for="(item,index) in content" :key="index">{{item.name}}</span></p>
+                <p class="content">平台服务：<span v-for="(item,index) in before_client" :key="index">{{item.name}}</span></p>
+                <p class="content">服务商服务：<span v-for="(item,index) in before_ser" :key="index">{{item.name}}</span></p>
                 <p>所属商家：{{merchant}}</p>
                 <p>服务范围：<span v-for="(item,index) in areaList" :key="index">{{item.name}}</span></p>
                 <p class="Hasservice_line"></p>
@@ -25,11 +26,12 @@ export default {
     return {
         name:'',
         phone:'',
-        content:'', //服务内柔
         merchant:'', //所属商家
         service:'',
         cause : '', //未通过原因
-        areaList:[] //服务范围
+        areaList:[], //服务范围,
+        client:[],
+        ser: []
     };
   },
   created() {
@@ -37,7 +39,10 @@ export default {
 
     this.name = faildata.user.name
     this.phone = faildata.user.phone
-    this.content = faildata.user.basicproducts
+    this.client = faildata.client_basic_product_cate_gory
+    this.ser =    faildata.service_provider_basic_products
+    this.before_client =  faildata.before_client
+    this.before_ser =  faildata.before_ser
     this.merchant = faildata.user.service_provider
     this.service = faildata.user.districts
     this.cause = faildata.user.fail_reason
@@ -50,8 +55,9 @@ export default {
         country: faildata.user.country,
         avatar: faildata.user.avatar,
         is_subscribe: faildata.user.is_subscribe,
+        client_basic_product_cate_gory : faildata.client_basic_product_cate_gory,
+        service_provider_basic_products : faildata.service_provider_basic_products,
         basic_products: faildata.basic_products,
-        addselect1:faildata.list,
         can_areas:faildata.list,
         service_provider_id:faildata.user.service_provider_id,
         subscribe_at:faildata.user.subscribe_at,

@@ -20,7 +20,7 @@ Vue.component('my-upload', {
         }
     },
     methods: {
-        
+
         /////////////////js原生的上传并压缩图片///////////////////////
         addPic: function addPic(e) {
             var _this = this;
@@ -141,7 +141,7 @@ Vue.component('my-upload', {
             //上传图片给后台
             axios.post(this.picInfo.url, data, config).then(res => {
                 this.globalToast.clear();
-                this.imgage = "http://testimg.funlifeday.com/" + res.data
+                this.imgage = "http://testimg.funlifeday.com/" + res.data;
                 // this.img = window.location.origin + res.data
                 //子组件间数据返回父组件
                 this.$emit("childget", this.ind, res.data);

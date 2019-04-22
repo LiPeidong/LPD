@@ -4,7 +4,7 @@
     	<div class="Submit_header">
             <van-icon name="checked" size="25px" color="#5b9e46"/>
             <p>提交成功</p>
-            <p>工作人员将在5个工作日内审核该申请</p>
+            <!--<p>工作人员将在5个工作日内审核该申请</p>-->
             <van-button size="large" @click="checkto">确定</van-button>
         </div>
 

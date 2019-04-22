@@ -109,7 +109,7 @@
                   message: res.data.message
                 })
                 .then(() => {
-                  this.isCheck = false;
+                  this.isCheckbox = false;
                   return false;
                 });
             }
@@ -123,25 +123,32 @@
               avatar: res.data.user.avatar,
               is_subscribe: res.data.user.is_subscribe,
               basic_products: res.data.basic_products,
+              client_basic_product_cate_gory : res.data.client_basic_product_cate_gory,
+              service_provider_basic_products : res.data.service_provider_basic_products,
               addselect1: res.data.list,
               can_areas: res.data.list,
               service_provider_id: res.data.user.service_provider_id,
               subscribe_at: res.data.user.subscribe_at,
               service_provider: res.data.user.service_provider
             };
+            console.log(datas)
             //提交注册
             localStorage.setItem("temp", JSON.stringify(datas));
-            console.log(datas);
+            console.log(JSON.parse(localStorage.getItem("temp")));
           });
         })
         .catch(err => {
-          console.log(err);
+          this.globalToast.clear();
+          this.$dialog
+            .alert({
+              message: "系统繁忙，请稍后再试!"
+            })
         });
     },
     mounted() {
       this.key = this.$route.query.key;
       // 生命周期
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         // 实例完全插入文档
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/MicroMessenger/i) == 'micromessenger') {
@@ -197,7 +204,7 @@
     font-size: 24px;
     font-weight: 500;
   }
-  .van-button{border-radius: 10px !important;}
+  #before .van-button{border-radius: 10px !important;}
    .van-button--large {
     width: 80%;
     height: 40px;
@@ -214,15 +221,16 @@
   #before .van-hairline--top {
     text-align: center;
   }
-
+van
   #before .van-checkbox__icon .van-icon {
     width: 15px !important;
     height: 15px !important;
     line-height: 15px !important;
     font-size: 10px !important;
   }
+
   #before .van-button--default {
-    background: #489ef0 !important;
+    background: #489ef0 ;
     color: #fff !important;
   }
 </style>

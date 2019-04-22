@@ -7,24 +7,24 @@
           <img src="../../assets/images/tx.jpg" alt>
         </div>
         <div class="Person_headerimgtext">
-          <p>呵呵</p>
+          <p>{{bigName}}</p>
         </div>
       </div>
     </div>
     <div class="Person_class">
-      <router-link to="/Hasservice">
+      <router-link to="/Inservice">
         <div class="Person_classleft">
           <h2>
-            2
+            {{single}}
             <span>单</span>
           </h2>
           <p>服务中房屋</p>
         </div>
       </router-link>
-      <router-link to="/Hasservicemoney">
+      <router-link to="/Money">
         <div class="Person_classleft">
           <h2>
-            2
+            0
             <span>元</span>
           </h2>
           <p>可结算金额</p>
@@ -34,13 +34,13 @@
     <div class="Person_li" >
       <ul>
         <li>
-          <router-link to="/Nowservices">
+          <router-link to="/History">
             <img src="../../assets/images/person1.jpg" alt>
             <p>历史服务</p>
           </router-link>
         </li>
         <li>
-          <router-link to="/Anomaly">
+          <router-link to="/Buy">
             <img src="../../assets/images/person2.jpg" alt>
             <p>已购买服务</p>
           </router-link>
@@ -58,8 +58,8 @@
         <li>
           <h2>热卖产品<span>优选精品</span></h2>
           <ul>
-            <li><img src="../../assets/images/remaichanpin1.jpg" alt=""></li>
-            <li><img src="../../assets/images/remaichanpin1.jpg" alt=""></li>
+            <li><img src="../../assets/images/热卖产品1.png" alt=""></li>
+            <li><img src="../../assets/images/热卖产品2.png" alt=""></li>
           </ul>
         </li>
       </ul>
@@ -73,20 +73,47 @@ export default {
   name: "BigPerson",
   data() {
     return {
-
+      single:0,
+      bigName:'大房东'
     };
   },
-
-
-
+  created(){
+    this.globalToast = this.$toast.loading({
+      duration: 0, // 持续展示 toast
+      mask: true, //背景层
+      forbidClick: true, // 禁用背景点击
+      message: "加载中..."
+    });
+    this.$http.post(BASE_URL+'/api/get_in_service_cards',{
+      big_land_id : localStorage.getItem('big_land_id')
+    }).then(res => {
+      this.globalToast.clear();
+      this.single = res.data.cards.length;
+      this.bigName = res.data.big_land_name;
+      console.log(res)
+    }).catch(err =>{
+      this.globalToast.clear();
+      this.$dialog
+        .alert({
+          message: "系统繁忙，请稍后再试!"
+        })
+    })
+  },
+  destroyed(){
+    this.$emit('goGrabsingle', 1)
+  },
 };
 </script>
 <style scoped>
-.Person {
-  background: #f5f5f5;
-  height: 100%;
-  overflow-y: auto;
-}
+  .Person {
+    background: #f5f5f5;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
 .Person_header {
   background: #499ef0;
 }
@@ -143,7 +170,7 @@ export default {
   margin: 10px 0;
 }
 .Person_li {
-  width: 345px;
+  width: 80%;
   margin: 0 auto;
   background: #fff;
   border: 1px solid #499ef0;

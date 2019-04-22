@@ -19,7 +19,7 @@ export default {
     };
   },
   created() {
-    this.card_id = this.$route.query.card_id 
+    this.card_id = this.$route.query.card_id;
   },
   methods:{
     winto(){

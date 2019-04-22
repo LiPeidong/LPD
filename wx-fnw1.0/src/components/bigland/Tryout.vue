@@ -1,7 +1,7 @@
 <template>
   <div class="CharterA">
     <!-- 试用产品 -->
-    <img src="../../assets/images/shiyongbanner.jpg" alt>
+    <img src="../../assets/images/shiyongbanner.png" alt>
     <div class="CharterA_text">
       <h2>包租试用套餐</h2>
       <div style="display: flex;" class="CharterA_content">
@@ -22,7 +22,7 @@
           @click="tab(index)"
         >{{item}}</div>
       </div>
-      <img src="../../assets/images/charter4.jpg" alt v-show="CharterA_tab_img" >
+      <img src="../../assets/images/charter6.jpg" alt v-show="CharterA_tab_img" >
       <div v-show="CharterA_tab_estimate" class="estimate">
         <div class="estimate_flex">
           <img src="../../assets/images/pj.jpg" alt>
@@ -114,9 +114,6 @@ export default {
   border-top: 1px solid #c7c7c7;
   border-bottom: 5px solid #f5f5f5;
   padding: 12px 12px 0 12px;
-}
-.CharterA_tab_title > div {
-  width: 62px;
 }
 .CharterA_tab_active {
   color: #499ef0;

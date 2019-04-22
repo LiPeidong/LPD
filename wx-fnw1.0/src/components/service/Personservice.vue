@@ -29,14 +29,20 @@
                  <p>我的工人</p>
              </router-link>
            </li>
-             <li>
-                <router-link :to="{path:'/ServiceAnomaly'}">
-                  <img src="../../assets/images/个人中心_09.jpg" alt="">
-                  <p>异常工单</p>
-               </router-link>
+           <li>
+             <router-link :to="{path:'/AddWorker'}">
+               <img src="../../assets/images/Addworker.png" alt="">
+               <p>添加工人</p>
+             </router-link>
            </li>
              <li>
-               <a :href='"tel:"+15928157446'>
+                <div @click="mistake">
+                  <img src="../../assets/images/个人中心_09.jpg" alt="">
+                  <p>异常工单</p>
+               </div>
+           </li>
+             <li>
+               <a :href='"tel:"+phone'>
                  <img src="../../assets/images/个人中心_11.jpg" alt>
                  <p>联系客服</p>
                </a>
@@ -48,8 +54,8 @@
         <li>
           <h2>热卖产品<span>优选精品</span></h2>
           <ul>
-            <li><img src="../../assets/images/gz.jpg" alt=""></li>
-            <li><img src="../../assets/images/js.jpg" alt=""></li>
+            <li><img src="../../assets/images/雇主保.jpg" alt=""></li>
+            <li><img src="../../assets/images/金锁保banner.jpg" alt=""></li>
           </ul>
         </li>
       </ul>
@@ -70,7 +76,8 @@ export default {
       img_url:'../../assets/images/tx.jpg',
       url:'http://testimg.funlifeday.com/',
       totalServicePrice:'0',
-      service_provider_id:''
+      service_provider_id:'',
+      phone:''
     }
   },
   created(){
@@ -81,29 +88,49 @@ export default {
       message: "加载中..."
     });
     this.service_provider_id = this.$route.query.service_provider_id;
-    console.log(1111,this.service_provider_id)
     this.$http.get(BASE_URL + "/api/get_access_token").then(res => {
         res.data.expires_at =
           new Date().getTime() + (res.data.expires_in - 20) * 1000;
         localStorage.setItem("tokens", JSON.stringify(res.data));
         this.globalToast.clear();
-    });
-    this.$http
-      .post(BASE_URL + "/api/get_service_provider_info", {
-        service_provider_id: this.service_provider_id
-      })
-      .then(res => {
-        console.log(res)
-        this.contactor = res.data.contactor;
-        this.servicemoney = res.data.serviceProviderFinishCardsCount;
-        this.img_path = res.data.img_path[0];
-        this.totalServicePrice = res.data.totalServicePrice;
-        this.globalToast.clear();
-      })
-      .catch(err => {
-        console.log(err);
+      this.globalToast = this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        mask: true, //背景层
+        forbidClick: true, // 禁用背景点击
+        message: "加载中..."
       });
-    localStorage.setItem('service_provider_id',this.service_provider_id)
+      this.$http
+        .post(BASE_URL + "/api/get_service_provider_info", {
+          service_provider_id: this.service_provider_id
+        })
+        .then(res => {
+          console.log(res);
+          this.phone = res.data.phone;
+          this.contactor = res.data.contactor;
+          this.servicemoney = res.data.serviceProviderFinishCardsCount;
+          this.img_path = res.data.img_path;
+          this.totalServicePrice = res.data.totalServicePrice.toFixed(2);
+          localStorage.setItem('qr_img', res.data.add_qr);
+          this.globalToast.clear();
+        })
+        .catch(err => {
+          this.globalToast.clear();
+          this.$dialog
+            .alert({
+              message: "系统繁忙，请稍后再试!"
+            })
+        });
+      localStorage.setItem('service_provider_id',this.service_provider_id);
+    }).catch(err => {
+      this.globalToast.clear();
+      this.$dialog
+        .alert({
+          message: "系统繁忙，请稍后再试!"
+        })
+    });
+  },
+  mounted(){
+
   },
   methods:{
     Has_service(){
@@ -118,6 +145,11 @@ export default {
           service_provider_id:this.service_provider_id
         }
       })
+    },
+    mistake(){
+     this.$router.push({
+       path : '/ServiceAnomaly'
+     })
     }
   }
 }

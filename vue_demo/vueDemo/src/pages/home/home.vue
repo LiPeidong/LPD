@@ -53,17 +53,18 @@ export default{
   computed: {
     ...mapState(['city'])
   },
+  created () {
+    console.log('home的created')
+  },
   mounted () {
     this.lastCity = this.city
     this.getHomeInfo()
-    console.log('moun')
   },
   activated () { // 页面重新被显示时执行
     if (this.lastCity !== this.city) {
       this.lastCity = this.city
       this.getHomeInfo()
     }
-    console.log('acti')
   }
 }
 </script>

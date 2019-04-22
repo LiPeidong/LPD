@@ -12,17 +12,24 @@
                 v-model="form.user"
                 label="真实姓名1："
                 placeholder="请输入您的真实姓名"
-                icon="clear"
-                @click-icon="form.user = ''"
+                clearable
               ></van-field>
               <van-field
                 v-model="form.IDcard"
                 label="身份证号："
                 placeholder="请输入您的身份证号码"
-                icon="clear"
-                @click-icon="form.IDcard = ''"
+                clearable
               ></van-field>
-              <van-field v-model="form.phone" label="电话号码：" placeholder="请输入您的手机号码"></van-field>
+              <div style="display: flex; justify-content: space-around; align-items: center;">
+                <van-field v-model="form.phone" label="电话号码：" placeholder="请输入您的手机号码"></van-field>
+                <p v-if="canSave"
+                   style="white-space: nowrap;padding-right: 15px;color: #489ef0;padding-left: 10px;border-left: 1px solid #489ef0;"
+                   @click="verifiBtn">{{gain}}</p>
+                <p v-else disabled
+                   style="white-space: nowrap;padding-right: 15px;color: #489ef0;padding-left: 10px;border-left: 1px solid #489ef0;"
+                   @click="verifiBtn">{{gainNub}}s</p>
+              </div>
+              <van-field v-model="form.verification" label="手机验证码：" placeholder="请填写手机验证码"></van-field>
               <van-field
                 v-model="form.adds1"
                 class="add"
@@ -40,6 +47,9 @@
                 style="line-height:auto;"
               >
                 <van-checkbox-group v-model="form.areas" class="areass">
+                  <div @click="select_all" id="select_all">
+                    <van-checkbox  @click="select_all">全选</van-checkbox>
+                  </div>
                   <van-checkbox
                     v-for="item in can_areas"
                     :key="item"
@@ -125,6 +135,7 @@ export default {
       key: "",
       nickName: "", //微信昵称
       form: {
+        verification:'',
         user: "", //真实姓名
         phone: "",
         yzm: "", //验证码
@@ -154,13 +165,17 @@ export default {
       can_areas: [],
       //是否是修改
       isEdit: false,
-      adds1: []
+      adds1: [],
+      gain: '获取验证码',
+      gainNub: 60,
+      canSave: true,
     };
   },
   created() {
     var regdata = JSON.parse(localStorage.getItem("temp"));
     var reguser = JSON.parse(localStorage.getItem("user"));
     var regfailed = JSON.parse(localStorage.getItem("failed"));
+    console.log(regdata)
     if (regdata && reguser) {
       this.nickName = regdata.nickname;
       this.form.phone = reguser.phone;
@@ -168,6 +183,7 @@ export default {
       this.form.user = reguser.name; //真实姓名
       this.form.shop.name = regdata.service_provider; //服务商
       this.addselect1 = regdata.can_areas; //四川省-成都市-区
+
       this.can_areas = regdata.can_areas.county_list; //区
       for (var i = 0; i < reguser.districts.length; i++) {
         this.adds1.push(reguser.districts[i].name);
@@ -199,13 +215,61 @@ export default {
   },
 
   methods: {
+    verifiBtn() {
+      var regPhone = /^1[3|4|5|7|8][0-9]{9}$/;
+      if (!regPhone.test(this.form.phone)) {
+        this.$toast.fail("请填写正确的手机号码!");
+        return false;
+      }
+      if (!this.canSave) {
+        this.canSave = false;
+        return false;
+      } else {
+        this.gainNub = 60;
+        var date = setInterval(() => {
+          this.gainNub--;
+          if (this.gainNub == 0) {
+            this.canSave = true;
+            clearInterval(date)
+          }
+        }, 1000);
+        this.$http.post(BASE_URL + '/api/send_message', {
+          phone: this.form.phone
+        }).then(res => {
+          console.log(res)
+          if (res.data.code == -10000) {
+            this.$toast.fail(res.data.message);
+          }
+          if (res.data.code == 10000) {
+            this.$toast.fail(res.data.message);
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+        this.canSave = false;
+      }
+    },
+    select_all(e){
+      this.area_select_all=!this.area_select_all
+      if(this.area_select_all){
+        console.log(e.target.previousSibling)
+        console.log(document.getElementById('select_all').childNodes[0].classList.add('van-checkbox__icon--checked'))
+        this.form.areas = this.can_areas
+        console.log(this.form.areas)
+      }
+      else{
+        console.log(document.getElementById('select_all').childNodes[0].classList.remove('van-checkbox__icon--checked'))
+        this.form.areas=[],
+          console.log(this.form.areas)
+      }
+    },
     //从组件获取img数据
     getImg(i, url) {
       this.form.upImgs[i] = url;
       this.form.imgdata.push(url);
       console.log(this.form.imgdata)
     },
-    // //服务地址确认
+    //服务地址确认
     onConfirm(value) {
       var add = "";
       this.form.listcode = [];
@@ -270,6 +334,9 @@ export default {
       if (!regPhone.test(this.form.phone)) {
         this.$toast.fail("请填写正确的手机号码!");
         return false;
+      } else if (!this.form.verification) {
+        this.$toast.fail('请填写正确的验证码!');
+        return false;
       }
 
       //服务地区
@@ -307,18 +374,54 @@ export default {
       for (var i = 0; i < this.form.areas.length; i++) {
         this.form.listcode.push(this.form.areas[i]);
       }
-      var userinfo = {
-        name: this.form.user,
-        id_card: this.form.IDcard,
-        phone: this.form.phone,
-        img_data: this.form.imgdata,
-        districts: this.form.listcode
-      };
-      let userinfo2 = JSON.stringify(userinfo);
-      localStorage.setItem("user", userinfo2);
-      this.$router.push({
-        path: "RegisterServices",
-        name: "RegisterServices"
+      this.globalToast = this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        mask: true, //背景层
+        forbidClick: true, // 禁用背景点击
+        message: "加载中..."
+      });
+      this.$http.post(BASE_URL + '/api/verification_code', {
+        phone: this.form.phone
+      }).then(res => {
+        console.log(res);
+        this.globalToast.clear();
+        if (res.data.code === 10000) {
+          if (this.form.verification != res.data.message) {
+            this.$dialog
+              .alert({
+                message: '验证码输入错误'
+              })
+            return false;
+          }
+          //验证通过，提交数据
+          for (var i = 0; i < this.form.areas.length; i++) {
+            this.form.listcode.push(this.form.areas[i]);
+          }
+          var userinfo = {
+            name: this.form.user,
+            id_card: this.form.IDcard,
+            phone: this.form.phone,
+            img_data: this.form.imgdata,
+            districts: this.form.listcode
+          };
+          let userinfo2 = JSON.stringify(userinfo);
+          localStorage.setItem("user", userinfo2);
+          this.$router.push({
+            path: "/RegisterServices",
+          });
+        } else if (res.data.code == -10000) {
+          this.$dialog
+            .alert({
+              message: res.data.message
+            })
+          return false;
+        }
+      }).catch(err => {
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
       });
     }
   }
@@ -333,7 +436,7 @@ export default {
   margin: 0;
 }
 .adds {
-  text-align: right;
+  text-align: left;
 }
 .areass .van-checkbox {
   min-width: 30.33%;

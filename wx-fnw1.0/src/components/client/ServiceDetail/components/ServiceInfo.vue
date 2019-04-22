@@ -7,70 +7,115 @@
     </div>
     <div class="detail">
       <ul class="clientInfo unit">
-        <li>用户姓名：{{data}}</li>
-        <li>用户电话：1238932423</li>
-        <li>用户地址：成华区万科华茂广场4栋1203</li>
+        <li>用户姓名：{{name}}</li>
+        <li>用户电话：{{phone}}</li>
+        <li>用户地址：{{address}}</li>
       </ul>
       <ul class="timeInfo unit">
-        <li>服务发起时间：2018年12月2日 14:00:12</li>
-        <li>服务承接时间：2018年12月6日 12:23:12</li>
-        <li>服务完成时间：2018年12月6日 12:12:33</li>
+        <li>服务发起时间：{{startTime}}</li>
+        <li>服务承接时间：{{continueTime}}</li>
+        <li>服务完成时间：{{fulfillTime}}</li>
       </ul>
       <ul class="WorkerInfo unit">
-        <li>服务人员姓名：彭师傅</li>
-        <li>服务人员工号：CHUSAD32</li>
-        <li>服务人员电话：341222139</li>
+        <li>服务人员姓名：{{serviceName}}</li>
+        <li>服务人员工号：{{job}}</li>
+        <li>服务人员电话：{{servicePhone}}</li>
       </ul>
     </div>
   </div>
 </template>
 <script>
-export default {
-  name:"ServiceInfo",
-  data () {
-    return {
-    }
-  },
-  props:['data']
-}
+  import BASE_URL from "../../../../constants";
+  export default {
+    name: "ServiceInfo",
+    props:['name','phone','address','startTime','continueTime','fulfillTime','serviceName','job','servicePhone']
+    // created() {
+    //   this.globalToast = this.$toast.loading({
+    //     duration: 0, // 持续展示 toast
+    //     mask: true, //背景层
+    //     forbidClick: true, // 禁用背景点击
+    //     message: "加载中..."
+    //   });
+    //   this.$http
+    //     .post(BASE_URL + "/api/get_not_confirm_finish_card_detail", {
+    //       card_id: this.$route.query.card_id,
+    //       open_id : localStorage.getItem('call_open_id')
+    //     }).then((res) => {
+    //     this.globalToast.clear();
+    //     if(res.data.code == -10000){
+    //       this.$dialog
+    //         .alert({
+    //           message: res.data.message
+    //         }).then( () => {
+    //         this.$router.push({
+    //           path:'/client/PersonalCenter',
+    //           user_id : res.data .user_id
+    //         })
+    //       })
+    //     }
+    //     console.log(res.data)
+    //     this.name = res.data.card.orders.name;
+    //     this.phone = res.data.card.orders.phone;
+    //     this.address = res.data.card.orders.full_address;
+    //     this.startTime = res.data.card.call_time; //服务开始时间
+    //     this.continueTime = res.data.card.worker_service_start_at; //服务承接时间
+    //     this.fulfillTime = res.data.card.worker_service_end_at; //服务发起时间
+    //     this.serviceName = res.data.card.worker ? res.data.card.worker.name : '工人已离职';
+    //     this.servicePhone = res.data.card.worker ? res.data.card.worker.phone : '';
+    //     this.job = res.data.card.worker ? res.data.card.worker.id : '';
+    //   }).catch(err => {
+    //     this.globalToast.clear();
+    //     this.$dialog
+    //       .alert({
+    //         message: "系统繁忙，请稍后再试!"
+    //       })
+    //   })
+    // }
+  }
 </script>
 <style scoped>
-.all{
-  text-align: left
-}
-.titleName{
-  margin:22px 0 22px 15px;
-  padding-left:15px;
-  border-left:3px solid #5f9dea
-}
-.titleName p{
-  font-size: 15px
-}
-.detail{
-  padding-left: 15px;
-  padding-right:15px;
-  background-color: #fff;
-  height:248px;
-  display: flex;
-  flex-direction: column;
-  justify-content:space-around
-}
-.unit{
-  padding-bottom: 10px;
-  display: flex;
-  height:60px;
-  flex-direction: column;
-  justify-content:space-around;
-}
+  .all {
+    text-align: left
+  }
 
-.unit li{
-  color: #333333;
-  font-size: 12px
-}
-.unit{
-  border-bottom: 1px solid #c7c7c7
-}
-.unit:last-child{
-  border-bottom:0;
-}
+  .titleName {
+    margin: 15px 0 15px 15px;
+    padding-left: 15px;
+    border-left: 3px solid #5f9dea
+  }
+
+  .titleName p {
+    font-size: 15px
+  }
+
+  .detail {
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #fff;
+    height: 248px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around
+  }
+
+  .unit {
+    padding-bottom: 10px;
+    display: flex;
+    height: 60px;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .unit li {
+    color: #333333;
+    font-size: 12px
+  }
+
+  .unit {
+    border-bottom: 1px solid #c7c7c7
+  }
+
+  .unit:last-child {
+    border-bottom: 0;
+  }
 </style>

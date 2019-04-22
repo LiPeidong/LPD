@@ -1,10 +1,11 @@
 <template>
   <div class="Hasservice">
     <!-- 异常工单 -->
-    <div class="Hasservice_list">
+    <div v-show="false">
+      <div class="Hasservice_list">
         <div class="Hasservice_listher">
-            <h2><span></span>疏通服务</h2>
-            <label>工单异常</label>
+          <h2><span></span>疏通服务</h2>
+          <label>工单异常</label>
         </div>
         <div class="Hasservice_listcen">
           <p>姓名：李某某</p>
@@ -17,11 +18,11 @@
           <p>异常原因：图片不符</p>
         </div>
         <van-button size="normal" class="btn-primary" @click="anomalyto">申诉</van-button>
-    </div>
-    <div class="Hasservice_list">
+      </div>
+      <div class="Hasservice_list">
         <div class="Hasservice_listher">
-            <h2><span></span>疏通服务</h2>
-            <label>申诉中</label>
+          <h2><span></span>疏通服务</h2>
+          <label>申诉中</label>
         </div>
         <div class="Hasservice_listcen">
           <p>姓名：李某某</p>
@@ -34,11 +35,11 @@
           <p>异常原因：图片不符</p>
         </div>
         <van-button size="normal" disabled  class="btn-primary">申诉</van-button>
-    </div>
+      </div>
       <div class="Hasservice_list">
         <div class="Hasservice_listher">
-            <h2><span></span>疏通服务</h2>
-            <label>申诉失败</label>
+          <h2><span></span>疏通服务</h2>
+          <label>申诉失败</label>
         </div>
         <div class="Hasservice_listcen">
           <p>姓名：李某某</p>
@@ -52,8 +53,15 @@
         </div>
         <div class="Hasservice_listpic">
           <p>申诉失败原因：图片不符</p>
-       </div>
+        </div>
         <van-button size="normal"  class="btn-primary" >申诉</van-button>
+      </div>
+    </div>
+    <div style="text-align: center; padding-top: 12px; height:100%;background: #fff;" v-show="show">
+      <div style="max-width:45%;height:175px;overflow:hidden;margin: 0 auto;">
+        <img src="../../assets/images/关于服务及订单.png" alt="" style="width:100%">
+      </div>
+      <p style="font-size: 12px;">您没有异常工单</p>
     </div>
   </div>
 </template>
@@ -64,24 +72,10 @@ export default {
        data() {
          return {
            service_provider_id:null,
-           worker_id:null
+           worker_id:null,
+           show:true,
          }
 
-  },
-  created(){
-    this.worker_id = this.$route.query.worker_id;
-    this.$dialog
-      .alert({
-        message: "正在开发中"
-      })
-      .then(()=>{
-        this.$router.push({
-          name:'Person',
-          query:{
-            worker_id : this.worker_id,
-          }
-        })
-      })
   },
 
   destroyed () {
@@ -109,7 +103,7 @@ export default {
    .Hasservice_listcen{border-bottom: 1px solid #c7c7c7;padding-bottom: 10px;text-align: left;padding-left: 10px;}
    .Hasservice_listcen p{line-height: 24px;}
    .Hasservice_listpic{text-align: left;padding: 10px ;font-size: 12px;border-bottom: 1px solid #c7c7c7;color: #e60000;}
-   .active{background: #499ef0;color: #fff !important;}
+   .Hasservice .active{background: #499ef0;color: #fff !important;}
    .btn-primary{width: 200px;height: 40px;margin: 15px 0;}
   .van-button--normal{font-size: 18px !important;;}
 </style>

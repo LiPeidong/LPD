@@ -1,6 +1,6 @@
 <template>
   <div class="Hasservice">
-    <!-- 已服务工单总金额 -->
+    <!-- 工人详情 -->
     <div class="work_list">
       <ul style="display:flex; justify-content:space-around;">
         <li v-for="(item,index) in work_list" :key="index" @click="workList(index,$event)">
@@ -62,19 +62,20 @@
           <span></span>
           {{item.service_type}}
         </h2>
-        <van-rate v-model="value" :size="14" :count="5" color="#ffa800" readonly	/>
+        <van-rate v-model="item.rate" v-if ="item.rate!=null" :size="14" :count="5" color="#ffa800" readonly void-color="#ffa800"/>
+        <van-rate v-show="item.rate != null" v-else ="item.rate==null" :size="14" :count="5" color="#ffa800" readonly void-color="#ffa800"/>
       </div>
       <div class="Hasservice_listcen">
         <p>姓名：{{item.username}}</p>
-        <p>电话：{{item.phone}}</p>
-        <p>地址：{{item.address}}</p>
+        <p>电话：{{item.phone.substring(0,3)+"XXXX"+item.phone.substring(7,11)}}</p>
+        <p>地址：{{item.address.substring(0,9)+"XXXXXXX"}}</p>
         <p>接单时间：{{item.start_at}}</p>
         <p>完成时间：{{item.end_at}}</p>
       </div>
       <div class="Hasservice_listpic">
         <p>
           服务价格：&emsp;
-          <span>&yen;{{item.price}}</span>
+          <span>&yen;{{item.price.toString()+".00"}}</span>
         </p>
       </div>
     </div>
@@ -137,14 +138,14 @@
           console.log(res.data)
           this.finish_cards = res.data.finish_cards;
           this.orderNum = res.data.service_count;
-          this.orderMoney = res.data.service_total_price;
+          this.orderMoney = res.data.service_total_price.toFixed(2);
           this.globalToast.clear();
         })
         .catch(err => {
           this.globalToast.clear();
           this.$dialog
             .alert({
-              message: "系统错误，请稍后再试！"
+              message: "系统繁忙，请稍后再试!"
             })
         });
       this.$http
@@ -161,7 +162,7 @@
           this.globalToast.clear();
           this.$dialog
             .alert({
-              message: "系统错误，请稍后再试！"
+              message: "系统繁忙，请稍后再试!"
             })
         });
     },
@@ -300,8 +301,8 @@
   }
    .name ul {
     background: #f5f5f5;
-     height: 201px;
      overflow: scroll;
+     max-height: 201px;
   }
    .name ul li {
     border-bottom: 1px solid #c7c7c7;
@@ -440,7 +441,7 @@
     color: #499ef0;
   }
 
-  .active {
+  .Hasservice .active {
     background: #499ef0;
     color: #fff !important;
   }
@@ -461,4 +462,25 @@
  .el-date-picker .el-picker-panel__content{
    margin:0 auto;
  }
+   .Hasservice .name{
+     position: relative;
+     z-index: 1;
+     overflow: scroll;
+     -webkit-overflow-scrolling: touch;
+     overflow-scrolling: touch;
+   }
+   .Hasservice .name ::-webkit-scrollbar {/*滚动条整体样式*/
+     width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+     height: 4px;
+   }
+   .Hasservice .name ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+     border-radius: 5px;
+     box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+     background: rgba(0,0,0,0.2);
+   }
+   .Hasservice .name ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+     box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+     border-radius: 0;
+     background: rgba(0,0,0,0.1);
+   }
 </style>

@@ -10,7 +10,7 @@
       </ul>
       <div class="name" v-show="show_area">
         <ul>
-          <li v-for="(item,index) in datamenu" :key="index" @click="select_menu(index)" :class="{active:index==current}">{{item.name}}</li>
+          <li v-for="(item,index) in area" :key="index" @click="select_menu(index)" :class="{active:index==current}">{{item.name}}</li>
         </ul>
         <div style="text-align:center; padding:2px 0 10px 0 ;">
           <van-button
@@ -22,7 +22,7 @@
       </div>
       <div class="name" v-show="show_type">
         <ul>
-          <li v-for="(item,index) in type" :key="index" @click="select_type(index)" :class="{active:index==current_type}">{{item.genre}}</li>
+          <li v-for="(item,index) in type" :key="index" @click="select_type(index)" :class="{active:index==current_type}">{{item.name}}</li>
         </ul>
         <div style="text-align:center; padding:2px 0 10px 0 ;">
           <van-button
@@ -34,62 +34,49 @@
       </div>
       <div class="name" v-show="show_buy_count">
         <ul>
-          <li v-for="(item,index) in service" :key="index">{{item.project}}</li>
+          <li v-for="(item,index) in next" :key="index" @click="select_service(index)" :class="{active:index==current_service}">{{item.count}}</li>
         </ul>
         <div style="text-align:center; padding:2px 0 10px 0 ;">
           <van-button
             type="default"
+            @click="service_btn"
             style="width:225px;height:30px;background:#499ef0;color:#fff;line-height:30px;border-radius: 15px;"
           >确定</van-button>
         </div>
       </div>
     </div>
-    <div class="closelist">
+    <div class="closelist" v-for="item in list" v-show="listShow" @click="btnList(item.order_id)">
       <div class="closeflex">
         <div class="closetext">
           <div style="display:flex;justify-content:space-between;">
-            <h3>疏通服务</h3>
-            <p>2018.11.16</p>
+            <h3>{{item.alies}}</h3>
+            <p>{{item.time}}</p>
           </div>
-          <p>四川省成都市成华区万科华茂1204号</p>
-          <span>已服务3次</span>
+          <p>{{item.address}}</p>
+          <span>已服务{{item.served_num}}次</span>
         </div>
       </div>
-    </div>
-    <div class="closelist">
-      <div class="closeflex">
-        <div class="closetext">
-          <div style="display:flex;justify-content:space-between;">
-            <h3>疏通服务</h3>
-            <p>2018.11.16</p>
-          </div>
-          <p>四川省成都市成华区万科华茂1204号</p>
-          <span>已服务3次</span>
-        </div>
+    </div >
+    <div style="text-align: center; padding-top: 12px; height:100%;background: #fff;" v-show="Grashow">
+      <div style="max-width:45%;height:175px;overflow:hidden;margin: 0 auto;">
+        <img src="../../assets/images/关于商品.png" alt="" style="width:100%">
       </div>
-    </div>
-    <div class="closelist">
-      <div class="closeflex">
-        <div class="closetext">
-          <div style="display:flex;justify-content:space-between;">
-            <h3>疏通服务</h3>
-            <p>2018.11.16</p>
-          </div>
-          <p>四川省成都市成华区万科华茂1204号</p>
-          <span>已服务3次</span>
-        </div>
-      </div>
+      <p style="font-size: 12px;">您还未购买过蜂鸟窝服务</p>
     </div>
   </div>
 </template>
 
 <script>
+  import BASE_URL from "../../constants";
 export default {
   name: "Buy",
   data() {
     return {
+      listShow:true,
+      Grashow:false,
       current: ' ',
       current_type:'',
+      current_service:'',
       triangle: "el-icon-caret-bottom",
       work_active: false,
       show_area: false,
@@ -100,25 +87,94 @@ export default {
       value1: "",
       activeIndex2: "1",
       work_list: ["购买区域", "购买类型", "服务次数"],
-      datamenu: [
-        { name: "全部工人" },
-        { name: "杨师傅" },
-        { name: "王师傅" },
-        { name: "冯师傅" },
-        { name: "李师傅" },
-        { name: "张师傅" },
-        { name: "廖师傅" }
-      ],
-      type:[{genre:'包租无忧A'},{genre:'包租无忧B'},{genre:'包租无忧C'}],
-      service: [
-        { project: "全部服务" },
-        { project: "开锁服务" },
-        { project: "空调维修" },
-        { project: "电视维修" },
-        { project: "热水器维修" },
-        { project: "疏通服务" }
-      ]
+      area: [],
+      type:[],
+      next:[
+        {count:'全部次数'},
+        {count:0},
+        {count:1},
+        {count:2},
+        {count:3},
+        {count:4},
+        {count:5},
+        {count:6},
+        {count:7},
+        {count:8},
+        {count:9},
+        {count:10},
+        {count:'>10'},
+        ],
+      code:0,
+      typeId:0,
+      servedNum:-1,
+      list:[]
     };
+  },
+  created(){
+    this.globalToast = this.$toast.loading({
+      duration: 0, // 持续展示 toast
+      mask: true, //背景层
+      forbidClick: true, // 禁用背景点击
+      message: "加载中..."
+    });
+    this.$http.post(BASE_URL+'/api/buy_services_area',{
+      userId : localStorage.getItem('big_land_id')
+    }).then(res => {
+      this.globalToast.clear();
+        this.area = res.data;
+    }).catch(err => {
+      this.globalToast.clear();
+      this.$dialog
+        .alert({
+          message: "系统繁忙，请稍后再试!"
+        })
+    });
+    this.globalToast = this.$toast.loading({
+      duration: 0, // 持续展示 toast
+      mask: true, //背景层
+      forbidClick: true, // 禁用背景点击
+      message: "加载中..."
+    });
+    this.$http.post(BASE_URL+'/api/buy_services_type',{
+      userId : localStorage.getItem('big_land_id')
+    }).then(res => {
+      this.globalToast.clear();
+      this.type = res.data;
+    }).catch(err => {
+      this.globalToast.clear();
+      this.$dialog
+        .alert({
+          message: "系统繁忙，请稍后再试!"
+        })
+    })
+    this.globalToast = this.$toast.loading({
+      duration: 0, // 持续展示 toast
+      mask: true, //背景层
+      forbidClick: true, // 禁用背景点击
+      message: "加载中..."
+    });
+    this.$http.post(BASE_URL+'/api/buy_services',{
+      userId : localStorage.getItem('big_land_id'),
+      county_code : this.code,
+      typeId : this.typeId,
+      servedNum : this.servedNum
+    }).then(res => {
+       this.globalToast.clear();
+      if (res.data.length == 0){
+        this.Grashow = true;
+        this.listShow = false;
+      } else {
+        this.Grashow = false;
+        this.listShow = true;
+        this.list = res.data
+      }
+    }).catch(err => {
+      this.globalToast.clear();
+      this.$dialog
+        .alert({
+          message: "系统繁忙，请稍后再试!"
+        })
+    })
   },
   methods: {
     workList(index, e) {
@@ -161,24 +217,136 @@ export default {
     select_menu(index,event){
       this.current = index
     },
+    select_service(index){
+      this.current_service = index
+    },
     select_type(index){
       this.current_type = index
     },
     menu_btn(){
       this.show_area = false;
-      for (var i=0;i<this.datamenu.length;i++){
+      for (var i=0;i<this.area.length;i++){
         if (i == this.current){
-          this.work_list[0] = this.datamenu[i].name;
+          this.work_list[0] = this.area[i].name;
+          this.code = this.area[i].code
         }
       }
+      this.globalToast = this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        mask: true, //背景层
+        forbidClick: true, // 禁用背景点击
+        message: "加载中..."
+      });
+      this.$http.post(BASE_URL+'/api/buy_services',{
+        userId : localStorage.getItem('big_land_id'),
+        county_code : this.code,
+        typeId : this.typeId,
+        servedNum : this.servedNum
+      }).then(res => {
+        this.globalToast.clear();
+        if (res.data.length == 0){
+          this.Grashow = true;
+          this.listShow = false;
+        } else {
+          this.Grashow = false;
+          this.listShow = true;
+          this.list = res.data
+        }
+      }).catch(err => {
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
+      })
     },
     type_btn(){
       this.show_type = false;
       for (var i=0;i<this.type.length;i++){
         if (i == this.current_type){
-          this.work_list[1] = this.type[i].genre;
+          this.work_list[1] = this.type[i].name;
+          this.typeId = this.type[i].id;
         }
       }
+      this.globalToast = this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        mask: true, //背景层
+        forbidClick: true, // 禁用背景点击
+        message: "加载中..."
+      });
+      this.$http.post(BASE_URL+'/api/buy_services',{
+        userId : localStorage.getItem('big_land_id'),
+        county_code : this.code,
+        typeId : this.typeId,
+        servedNum : this.servedNum
+      }).then(res => {
+        this.globalToast.clear();
+        if (res.data.length == 0){
+          this.Grashow = true;
+          this.listShow = false;
+        } else {
+          this.Grashow = false;
+          this.listShow = true;
+          this.list = res.data
+        }
+      }).catch(err => {
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
+      })
+    },
+    service_btn(){
+      this.show_buy_count = false;
+      for (var i=0;i<this.next.length;i++){
+        if (i == this.current_service){
+          this.work_list[2] = this.next[i].count;
+          this.servedNum = this.next[i].count;
+          if (this.next[i].count == '全部次数'){
+            this.servedNum = -1
+          }
+          if (this.next[i].count == ">10" ){
+            this.servedNum = 11
+          }
+        }
+      }
+      this.globalToast = this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        mask: true, //背景层
+        forbidClick: true, // 禁用背景点击
+        message: "加载中..."
+      });
+      this.$http.post(BASE_URL+'/api/buy_services',{
+        userId : localStorage.getItem('big_land_id'),
+        county_code : this.code,
+        typeId : this.typeId,
+        servedNum : this.servedNum
+      }).then(res => {
+        this.globalToast.clear();
+        if (res.data.length == 0){
+          this.Grashow = true;
+          this.listShow = false;
+        } else {
+          this.Grashow = false;
+          this.listShow = true;
+          this.list = res.data
+        }
+      }).catch(err => {
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
+      })
+    },
+    btnList(id){
+        this.$router.push({
+          path:'/Servicedetail',
+          query:{
+            order_id : id
+          }
+        })
     }
   }
 };
@@ -241,7 +409,9 @@ body .el-picker-panel{
 }
 .workvice .name ul {
   background: #f5f5f5;
-  height: 201px;
+  min-height: 0px;
+  overflow-y: auto;
+  max-height: 201px;
   overflow: scroll;
 }
 .workvice .name ul li {
@@ -286,7 +456,8 @@ body .el-picker-panel{
   display: inline-block;
   padding: 0 15px;
   height: 15px;
-  line-height: 17px;
+  line-height: 15px;
+  font-size: 10px;
 }
 .workvice .work_active {
   color: #499ef0 !important;
@@ -308,4 +479,25 @@ body .el-picker-panel{
   display: none;
 }
 .buy .active{color:#499ef0 !important;}
+.workvice .name{
+  position: relative;
+  z-index: 1;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+.workvice .name ::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 4px;
+}
+.workvice .name ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.2);
+}
+.workvice .name ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 0;
+  background: rgba(0,0,0,0.1);
+}
 </style>

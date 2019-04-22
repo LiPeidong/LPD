@@ -7,7 +7,7 @@
         <p style="font-size:30px;display:flex;line-height:45px;">&yen;&ensp;<input type="text" placeholder="" v-model="money"></p>
         <p>可提现余额￥1000.00 <span style="color:#499ef0;">&ensp;全部提现</span></p>
         <div style="text-align:center;">
-            <van-button size="large" class="btn-primary " :disabled="!money"  style="width:80%;margin-top:38px;margin-bottom:51px;">确认提现</van-button>
+            <van-button size="large" class="btn-primary " :disabled="!money"  style="width:80%;margin-top:38px;margin-bottom:51px;height: 40px;line-height: 40px;">确认提现</van-button>
         </div>
    </div>
   </div>

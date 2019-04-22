@@ -47,6 +47,9 @@ export default {
       }
     }
   },
+  created () {
+    console.log('detail的created')
+  },
   mounted () {
     this.getDetailInfo()
   }

@@ -44,6 +44,9 @@ export default {
       this.letter = letter
     }
   },
+  created () {
+    console.log('city页面的created')
+  },
   mounted () {
     this.getCityInfo()
   }

@@ -1,8 +1,8 @@
 <template>
     <div class="tab">
-       <router-view></router-view>
+       <router-view @goPerson="goPerson" @goGrabsingle="goGrabsingle"></router-view>
        <van-tabbar v-model="active" style=" box-shadow:   0px -10px 10px #fbfbfb;">
-             <van-tabbar-item to=/BigMenu/Home>
+             <van-tabbar-item :to="{path:'/BigMenu/Home',query:{big_land_id : big_land_id}}">
                 <span>首页</span>
                 <img slot="icon" slot-scope="props" :src="props.active ? icon.active : icon.normal">
             </van-tabbar-item>
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       active:'0',
+      big_land_id:'',
       icon: {
         normal: require("../../assets/images/home1.jpg"),
         active: require("../../assets/images/home2.jpg")
@@ -33,23 +34,19 @@ export default {
     };
   },
   created () {
+    this.$dialog.close();
     this.active =this.$route.path === '/BigMenu/BigPerson' ? 1 : 0;
+    this.big_land_id = localStorage.getItem('big_land_id')
+
   },
-  mounted() {
-    // this.key = this.$route.query.key;
-    // // 生命周期
-    // this.$nextTick(function () {
-    // 	// 实例完全插入文档
-    // 	var ua = window.navigator.userAgent.toLowerCase();
-    // 	if (ua.match(/MicroMessenger/i) == 'micromessenger') {
-    // _this3.cartView();
-    // 	} else {
-    // 		var body = document.querySelector('body');
-    // 		body.innerHTML = '请用微信打开此链接';
-    // 		body.setAttribute('text-align', 'center');
-    // 	}
-    //   });
-  }    
+  methods:{
+    goPerson(){
+      this.active = 1
+    },
+    goGrabsingle(){
+      this.active = 0
+    },
+  }
 };
 </script>
 

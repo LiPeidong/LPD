@@ -8,10 +8,14 @@
 					<p>平台将通过您选择的项目为您派单</p>
 					<p>（多选）</p>
 				<div class="list">
-						<p>综合服务</p>
+						<p>平台服务</p>
 						<ul class="ul-list">
-							<li v-for="(item,index) in basicproducts" :key="index" @click="handler(index,$event)" :class="{'active':active}">{{item.name}}</li>
+							<li v-for="(item,index) in category_diffs" :key="index" @click="handler(index,$event)" :class="{'active':active}">{{item.name}}</li>
 						</ul>
+            <p>自营服务</p>
+            <ul class="ul-list">
+              <li v-for="(item,index) in basic_product_diffs" :key="index" @click="handler2(index,$event)" :class="{'active':active}">{{item.name}}</li>
+            </ul>
 					</div>
 				</div>
 			</div>
@@ -46,9 +50,11 @@ export default {
     return {
       globalToast: null, //加载弹窗
       isAdd: false, //是否是添加服务页面
-      basicproducts:[], //综合服务类型
+      category_diffs:[], //平台服务类型
+      basic_product_diffs:'',//自营服务
       active: false,
-      dataid:[], //服务类型的id
+      category_diffsId:[], //服务类型的id
+      basic_product_diffsId:[],
       picshow: {
         p1: false,
         p2: false,
@@ -71,21 +77,25 @@ export default {
         message: "加载中..."
       });
     this.$http
-      .post(BASE_URL + "/api/add_worker_basic_products", {
+      .post(BASE_URL + "/api/get_woker_basic_products", {
         worker_id: localStorage.getItem("workId")
       })
       .then(res => {
         console.log(res.data)
           this.globalToast.clear();
-          this.basicproducts = res.data.basic_products;
+          this.category_diffs = res.data.category_diffs;
+          this.basic_product_diffs = res.data.basic_product_diffs;
       })
       .catch(err => {
-        console.log(err);
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
       });
   },
 
   mounted() {
-
     //生命周期
     // this.$nextTick(function() {
     //   //实例完全插入文档
@@ -104,10 +114,20 @@ export default {
       if (!e.target.className) {
         e.target.className = "active"; //切换按钮样式
         //写逻辑
-        this.dataid.push(this.basicproducts[index].id)
+        this.category_diffsId.push(this.category_diffs[index].id)
       } else {
         e.target.className = ""; //切换按钮样式
-       this.dataid.splice(this.dataid.indexOf(this.basicproducts[index].id),1)
+       this.category_diffsId.splice(this.category_diffsId.indexOf(this.category_diffs[index].id),1)
+      }
+    },
+    handler2(index, e) {
+      if (!e.target.className) {
+        e.target.className = "active"; //切换按钮样式
+        //写逻辑
+        this.basic_product_diffsId.push(this.basic_product_diffs[index].id)
+      } else {
+        e.target.className = ""; //切换按钮样式
+        this.basic_product_diffsId.splice(this.basic_product_diffsId.indexOf(this.basic_product_diffs[index].id),1)
       }
     },
     //列表选择
@@ -120,10 +140,13 @@ export default {
     //提交信息
      register() {
       //提交前验证
-      if ( !this.dataid.length) {
+       console.log(this.category_diffsId.length)
+       console.log(this.basic_product_diffsId.length)
+      if (this.category_diffsId.length == 0 &&  this.basic_product_diffsId.length == 0) {
         this.$toast.fail("请至少选择一个服务内容！");
         return false;
       }
+
        this.globalToast = this.$toast.loading({
         duration: 0, // 持续展示 toast
         mask: true, //背景层
@@ -133,18 +156,21 @@ export default {
       this.$http
       .post(BASE_URL + "/api/store_worker_basic_products", {
         worker_id: localStorage.getItem("workId"),
-        basic_products : this.dataid,
+        self_basic_product_ids : this.basic_product_diffsId,
+        types : this.category_diffsId,
         img_data : this.img_data
-      })
-      .then(res => {
+      }).then(res => {
         console.log(res.data)
         this.$router.push({
             name:'Servecheck',
         });
          this.globalToast.clear();
-      })
-      .catch(err => {
-        console.log(err);
+      }).catch(err => {
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
       });
     }
   }
@@ -155,8 +181,8 @@ export default {
 .box {padding: 20px 5%;text-align: center; background: #fff;}
 .box p {color: #686868; line-height: 2;}
 .list p {color: #333;font-size: 18px;line-height: 2;margin-top: 5px;text-align: start;margin-left: 8px;}
-.ul-list li{height: 25px;line-height: 25px;}
-.active{color: #fff;background: #5f9de9;   }
+.ul-list li{height: 25px;line-height: 25px;    width: 27%;padding:0 4px;}
+.active{color: #fff !important;background: #5f9de9;   }
 
 .van-button--large {
   width: 80%;

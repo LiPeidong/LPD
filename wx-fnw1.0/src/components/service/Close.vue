@@ -1,55 +1,65 @@
 <template>
   <div class="Person">
     <!-- 可结算金额 -->
-    <div class="Person_class">
+    <div>
+      <div class="Person_class">
         <div class="Person_classleft">
-            <p>已服务总金额</p>
-            <h2>{{totalSelfServicePrice}}<span> 元</span></h2>
+          <p>{{serviceName}}</p>
+          <h2>{{showPrice.toFixed(2)}}<span> 元</span></h2>
         </div>
         <div class="Person_classleft" :style="{'visibility':showWithdraw}">
-            <p @click="bringDetail">提现明细</p>
-            <div class="closetx" @click="bringCash">提现</div>
+          <p @click="bringDetail">提现明细</p>
+          <div class="closetx" @click="bringCash">提现</div>
         </div>
-    </div>
-    <div class="incomeType">
-      <ul style="display:flex; justify-content:space-around;">
-        <li v-for="(item,index) in work_list" :key="index" @click="incomeType(index,$event)">
-          <span ref="content" :class="{incomeActive:incomeActive==index}">{{item}}</span>
-        </li>
-      </ul>
-    </div>
-     <div class="Hasservice_tab">
-         <ul>
+      </div>
+      <div class="incomeType">
+        <ul style="display:flex; justify-content:space-around;">
+          <li v-for="(item,index) in work_list" :key="index" @click="incomeType(index,$event)">
+            <span ref="content" :class="{incomeActive:incomeActive==index}">{{item}}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="Hasservice_tab">
+        <ul>
           <li  v-for="(item,index) in tab" :class="{active:active==index}" @click="closetab(index)" :key="index">{{item.data}}</li>
         </ul>
         <div class="Hasservice_fl">
-             <div class="Hasservice_dat">
-              <p>服务次数</p>
-              <span>{{showServiceNum}}</span>
-            </div>
-            <div class="Hasservice_dat">
-              <p>服务金额</p>
-              <span>{{showPrice}}</span>
-            </div>
-        </div>
-    </div>
-    <div class="closelist"  v-for="(item,index) of showList" :key="index">
-      <div class="closeflex">
-        <div class="closeimg">
-          <img src="../../assets/images/mt.jpg" alt="">
-        </div>
-        <div class="closetext">
-          <div style="display:flex;justify-content:space-between;">
-            <h3>{{item.service_type}}</h3>
-            <p>{{item.end_at}}</p>
+          <div class="Hasservice_dat">
+            <p>服务次数</p>
+            <span>{{showServiceNum}}</span>
           </div>
-
-          <p>{{item.address}}</p>
-          <span>{{item.workername}}</span>
+          <div class="Hasservice_dat">
+            <p>服务金额</p>
+            <span>{{showPrice.toFixed(2)}}</span>
+          </div>
         </div>
       </div>
-      <p class="closep">结算收入：<span>&yen; {{item.price}}</span></p>
+     <div style="background: #f5f5f5;padding-top: 10px;">
+       <div class="closelist"  v-for="(item,index) of showList" :key="index" @click="btnDetails(item.id)">
+         <div class="closeflex">
+           <div class="closeimg">
+             <img src="../../assets/images/mt.jpg" alt="">
+           </div>
+           <div class="closetext">
+             <div style="display:flex;justify-content:space-between;">
+               <h3>{{item.service_type}}</h3>
+               <p>{{item.end_at}}</p>
+             </div>
+             <p>{{item.address}}</p>
+             <span>{{item.workername}}</span>
+           </div>
+         </div>
+         <p class="closep">结算收入：<span>&yen; {{item.price.toFixed(2)}}</span></p>
+       </div>
+     </div>
+      <div style="text-align: center; padding-top: 12px; height:100%;background: #fff;" v-show="showPrice==0">
+        <div style="max-width:45%;height:175px;overflow:hidden;margin: 0 auto;">
+          <img src="../../assets/images/关于资金.png" alt="" style="width:100%">
+        </div>
+        <p style="font-size: 12px;">您还没有可结算金额</p>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -77,10 +87,20 @@ export default {
       showServiceNum:0,
       showPrice:0,
       resData:null,
-      showList:null  //展示的列表
+      showList:null,  //展示的列表
+      serviceName:'已服务总金额',
+      show2:false,
     }
   },
   methods:{
+    btnDetails(id){
+      this.$router.push({
+        path:'./Workdetails',
+        query: {
+          card_id:id
+        }
+      })
+    },
     // request(days){
     //   console.log(this.service_provider_id)
     //   if (days != 100){
@@ -161,8 +181,11 @@ export default {
           this.globalToast.clear();
         })
         .catch(err => {
-          console.log(err);
-          return false;
+          this.globalToast.clear();
+          this.$dialog
+            .alert({
+              message: "系统繁忙，请稍后再试!"
+            })
         });
       }
       else{
@@ -194,36 +217,40 @@ export default {
           this.globalToast.clear();
         })
         .catch(err => {
-          console.log(err);
-          return false;
+          this.globalToast.clear();
+          this.$dialog
+            .alert({
+              message: "系统繁忙，请稍后再试!"
+            })
         });
       }
     },
     incomeType(index){ //在收入类型变更时，自己进行处理
       this.incomeActive = index
-      if(index==2) this.showWithdraw='visible'
-      else this.showWithdraw = 'hidden'
+      if(index==2) this.showWithdraw='visible';
+      else this.showWithdraw = 'hidden';
       switch(this.incomeActive){
         case 0:
-        this.showList = this.resData.serviceProviderFinishCards;
+          this.serviceName = this.work_list[0],
+          this.showList = this.resData.serviceProviderFinishCards;
           this.showServiceNum = this.resData.serviceProviderFinishCardsCount;
           this.showPrice = this.resData.totalServicePrice;
         break
         case 1:
-        this.showList = this.resData.serviceProviderFinishCardsSelf;
+          this.serviceName = this.work_list[1],
+          this.showList = this.resData.serviceProviderFinishCardsSelf;
           this.showServiceNum = this.resData.serviceProviderFinishCardsSelfCount;
           this.showPrice = this.resData.totalSelfServicePrice;
         break;
         case 2:
-        this.showList = this.resData.serviceProviderFinishCardsClient;
+          this.serviceName = this.work_list[2],
+          this.showList = this.resData.serviceProviderFinishCardsClient;
           this.showServiceNum = this.resData.serviceProviderFinishCardsClientCount;
           this.showPrice = this.resData.totalClientServicePrice;
       }
     },
     bringDetail(){
-      this.$router.push({
-        name:'Withdetail'
-      })
+
     },
     bringCash(){
       this.$router.push({
@@ -246,16 +273,20 @@ export default {
       })
       .then(res => {
         console.log(res);
-        this.resData = res.data
+        this.resData = res.data;
         this.showList = res.data.serviceProviderFinishCards;
         this.totalClientServicePrice = res.data.totalClientServicePrice;
         this.serviceProviderFinishCards = res.data.serviceProviderFinishCards;
         this.showServiceNum=this.showList.length;
-        this.totalServicePrice = res.data.totalServicePrice;
+        this.showPrice = res.data.totalServicePrice;
         this.globalToast.clear();
       })
       .catch(err => {
-        console.log(err);
+        this.globalToast.clear();
+        this.$dialog
+          .alert({
+            message: "系统繁忙，请稍后再试!"
+          })
       });
   }
 }
@@ -265,7 +296,7 @@ export default {
   .incomeActive{ color: #499ef0;border-bottom:1px solid #499ef0;padding-bottom:7px;}
   .incomeType{padding:4px 0;height:22px;line-height:22px;background-color:#fff;border-top:1px solid #c7c7c7;font-size:13px}
   .incomeType ul li:nth-child(2){padding:0 11px;border-left:1px solid #c7c7c7;border-right:1px solid #c7c7c7}
-  .Person{background:#f5f5f5;height: 100%;}
+  .Person{background:#fff;height: 100%;}
   .Person_class{display: flex;justify-content:space-between;background: #fff;padding: 0 14px;padding-bottom:19px;heitght:94px}
   .Person_class .Person_classleft h2{color: #ff8431;font-size: 24px;}
   .Person_class .Person_classleft h2 span{font-size: 12px;}
@@ -285,6 +316,7 @@ export default {
   .active{background: #499ef0;color: #fff !important;}
   .closetx{background:#499ef0;color: #fff;width: 100px;height: 30px;	border-radius: 15px;line-height: 30px;}
   .closelist{background:#fff;margin: 10px 10px 0 10px;border-radius: 10px;}
+  .closelist:first-child{margin: 0px 10px 0 10px;}
   .closeflex{display: flex;border-bottom: 1px solid #c7c7c7;padding: 10px;}
   .closeimg{width: 48px;height: 48px;border: solid 1px #c7c7c7;padding:10px;}
   .closeimg img{width: 48px;height: 48px;}

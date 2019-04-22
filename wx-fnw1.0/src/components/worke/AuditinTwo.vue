@@ -5,7 +5,8 @@
             <div class="Hasservice_listcen">
                 <h2>{{name}}  师傅</h2>
                 <p>手机号码：{{phone}}</p>
-                <p style="display:flex;flex-wrap:wrap;">服务内容：<span v-for="(item,index) in content" :key="index" style="margin-right:5px;">{{item.name}}</span></p>
+                <p style="display:flex;flex-wrap:wrap;">平台服务：<span v-for="(item,index) in client" :key="index" style="margin-right:5px;">{{item}}</span></p>
+                <p style="display:flex;flex-wrap:wrap;">服务商服务：<span v-for="(item,index) in ser" :key="index" style="margin-right:5px;">{{item}}</span></p>
                 <p>所属商家：{{merchant}}</p>
                 <p style="display:flex;flex-wrap:wrap;">服务范围：<span v-for="(item,index) in service" :key="index" style="margin-right:5px;">{{item.name}}</span></p>
                 <p class="Hasservice_line"></p>
@@ -23,17 +24,19 @@ export default {
     return {
         name:'',
         phone:'',
-        content:'',
+        client:[],
+        ser : [],
         merchant:'',
         service:[],
     }
   },
-  created () {      
-     let data = JSON.parse(localStorage.getItem('auditin')) 
-    this.name = data.user.name,
-    this.phone = data.user.phone,
-    this.content = data.user.basicproducts,
-    this.merchant = data.user.service_provider,
+  created () {
+     let data = JSON.parse(localStorage.getItem('auditin'))
+    this.name = data.user.name
+    this.phone = data.user.phone
+    this.client = data.user.client
+    this.ser = data.user.ser
+    this.merchant = data.user.service_provider
     this.service = data.user.districts
     this.service.reverse()
   }
